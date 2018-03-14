@@ -41,6 +41,8 @@ project/.sbtserver
 
 # Sonar
 .sonar/
+.scannerwork/
 
 # Application
 yourgame.log
+RUNNING_PID
