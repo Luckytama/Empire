@@ -19,6 +19,9 @@ class CountryTest extends WordSpec with Matchers {
       "have a 0 soldiers" in {
         country.soldiers should be(0)
       }
+      "have a nice String representation" in {
+        country.toString should be("Country")
+      }
     }
     "set with soldiers" should {
       "have soldiers" in {
