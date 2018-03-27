@@ -25,7 +25,7 @@ class CountryTest extends WordSpec with Matchers {
     }
     "set with soldiers" should {
       "have soldiers" in {
-        country.setSoldiers(5)
+        country.addSoldiers(5)
         country.soldiers should be(5)
       }
     }
