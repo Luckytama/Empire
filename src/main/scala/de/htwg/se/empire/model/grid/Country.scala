@@ -16,5 +16,13 @@ case class Country(name: String, adjacentCountries: List[Country]) {
     soldiers += numberOfSoldiers
   }
 
+  def removeSoldiers(numberOfSoldiers: Int): Unit = {
+    if (0 > numberOfSoldiers) {
+      LOG.error("Numbers of soldiers to remove can't be negative or null")
+      throw new IllegalArgumentException
+    }
+    if (0 <= soldiers - numberOfSoldiers) soldiers -= numberOfSoldiers else soldiers = 0
+  }
+
   override def toString: String = name
 }
