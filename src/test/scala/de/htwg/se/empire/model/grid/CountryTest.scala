@@ -28,11 +28,11 @@ class CountryTest extends WordSpec with Matchers {
         country.addSoldiers(5)
         country.soldiers should be(5)
       }
-      "remove soldiers" should {
-        "have 0 soldiers" in {
-          country.removeSoldiers(7)
-          country.soldiers should be(0)
-        }
+    }  
+    "remove soldiers" should {
+      "have 0 soldiers" in {
+        country.removeSoldiers(7)
+        country.soldiers should be(0)
       }
     }
   }
