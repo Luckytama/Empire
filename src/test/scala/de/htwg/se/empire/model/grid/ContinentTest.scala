@@ -19,7 +19,7 @@ class ContinentTest extends WordSpec with Matchers {
         continent.countries.length should be(1)
       }
       "have a nice Strin representation" in {
-        continent.toString should be("Continent => Bonus: 5, Countries: [Country(Country,null)]")
+        continent.toString should be("Continent => Bonus: 5, Countries: [Country]")
       }
     }
   }
