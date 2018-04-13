@@ -9,6 +9,7 @@ bin/
 # Intellij
 .idea/
 target/
+.idea_modules/
 
 # Maven
 log/
