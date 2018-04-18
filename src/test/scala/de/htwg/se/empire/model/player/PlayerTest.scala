@@ -20,7 +20,7 @@ class PlayerTest extends WordSpec with Matchers {
         player.countries.length should be(1)
       }
       "have a nice String representation" in {
-        player.toString should be("Player1")
+        player.toString should be("Player1 => countries: [Another Country]")
       }
     }
     "a country is added" should {
