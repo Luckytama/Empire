@@ -21,5 +21,5 @@ case class Player(name: String, countries: ListBuffer[Country]) {
 
   def getCountryAmount(): Int = countries.size
 
-  override def toString: String = "Player: {name: " + name + ",\ncountries: {" + countries.toString + "\n}"
+  override def toString: String =  name + " => " + "countries: [" + countries.mkString(",") + "]"
 }
