@@ -10,8 +10,8 @@ import scala.collection.mutable.ListBuffer
 @RunWith(classOf[JUnitRunner])
 class PlayerTest extends WordSpec with Matchers {
   "A Player" when {
-    val countries = ListBuffer(Country("Another Country", null))
-    val player = Player("Player1", countries)
+    val player = Player("Player1")
+    player.addCountry(Country("Another Country", null))
     "new" should {
       "have a name" in {
         player.name should be("Player1")
@@ -37,7 +37,7 @@ class PlayerTest extends WordSpec with Matchers {
     }
     "the country amount is requested" should {
       "be 1 country" in {
-        player.getCountryAmount() should be(1)
+        player.getCountryAmount should be(1)
       }
     }
   }
