@@ -7,8 +7,9 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class CountryTest extends WordSpec with Matchers {
   "A Country" when {
-    val adjacentCountries = List[Country](Country("Another Country", null))
-    val country = Country("Country", adjacentCountries)
+    val adjacentCountries = List[Country](Country("Another Country"))
+    val country = Country("Country")
+    country.setAdjacentCountries(adjacentCountries)
     "new" should {
       "have a name" in {
         country.name should be("Country")

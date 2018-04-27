@@ -2,11 +2,14 @@ package de.htwg.se.empire.model.grid
 
 import org.apache.logging.log4j.{ LogManager, Logger }
 
-case class Country(name: String, adjacentCountries: List[Country]) {
+case class Country(name: String) {
 
   val LOG: Logger = LogManager.getLogger(this.getClass)
 
+  var adjacentCountries: List[Country] = _
   var soldiers = 0
+
+  def setAdjacentCountries(adjacentCountries: List[Country]): Unit = this.adjacentCountries = adjacentCountries
 
   def addSoldiers(numberOfSoldiers: Int): Unit = {
     if (0 > numberOfSoldiers) {

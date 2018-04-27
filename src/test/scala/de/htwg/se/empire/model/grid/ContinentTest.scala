@@ -8,7 +8,7 @@ import org.scalatest.junit.JUnitRunner
 class ContinentTest extends WordSpec with Matchers {
   "A Continent" when {
     "new" should {
-      val continent = Continent("Continent", 5, List(Country("Country", null)))
+      val continent = Continent("Continent", 5, List(Country("Country")))
       "have a name" in {
         continent.name should be("Continent")
       }
