@@ -21,13 +21,13 @@ class PlayingFieldTest extends WordSpec with Matchers {
       }
     }
     "add Player" should {
-      val player = Player("Hannes", null)
+      val player = Player("Hannes")
       "have a player" in {
         playingField.addPlayer(player)
         playingField.players.length should be(1)
       }
       "have a nice String representation" in {
-        playingField.toString should be("Players: Hannes\nContinents: Europa => Bonus: 5, Countries: [Deutschland]")
+        playingField.toString should be("Players: Hannes => countries: []\nContinents: Europa => Bonus: 5, Countries: [Deutschland]")
       }
       "have no player after remove" in {
         playingField.removePlayer(player)
