@@ -23,5 +23,5 @@ case class Player(name: String) {
 
   def getCountryAmount: Int = countries.size
 
-  override def toString: String =  name + " => " + "countries: [" + countries.mkString(",") + "]"
+  override def toString: String = name + " => " + "countries: [" + countries.mkString(",") + "]"
 }
