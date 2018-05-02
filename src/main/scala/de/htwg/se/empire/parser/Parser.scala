@@ -1,6 +1,7 @@
 package de.htwg.se.empire.parser
 
-trait Parser {
+import de.htwg.se.empire.model.grid.PlayingField
 
-  def parseFile(path: String): Unit
+trait Parser {
+  def parseFile(path: String): PlayingField
 }
