@@ -6,25 +6,25 @@
         "bonus": 5,
         "countries": [
             {
-              "name": "Great Britain",
+              "name": "Great Britain"
             },
             {
-              "name": "Iceland",
+              "name": "Iceland"
             },
             {
-              "name": "Northern Europe",
+              "name": "Northern Europe"
             },
             {
-              "name": "Scandinavia",
+              "name": "Scandinavia"
             },
             {
-              "name": "Southern Europe",
+              "name": "Southern Europe"
             },
             {
-              "name": "Ukraine",
+              "name": "Ukraine"
             },
             {
-              "name": "Western Europe",
+              "name": "Western Europe"
             }
           ]
       },
@@ -33,31 +33,31 @@
         "bonus": 5,
         "countries": [
           {
-            "name": "Greenland",
+            "name": "Greenland"
           },
           {
-            "name": "Alaska",
+            "name": "Alaska"
           },
           {
-            "name": "Alberta",
+            "name": "Alberta"
           },
           {
-            "name": "Central America",
+            "name": "Central America"
           },
           {
-            "name": "Eastern United States",
+            "name": "Eastern United States"
           },
           {
-            "name": "Northwest Territory",
+            "name": "Northwest Territory"
           },
           {
-            "name": "Ontario",
+            "name": "Ontario"
           },
           {
-            "name": "Quebec",
+            "name": "Quebec"
           },
           {
-            "name": "Western United States",
+            "name": "Western United States"
           }
         ]
       },
@@ -66,40 +66,40 @@
         "bonus": 7,
         "countries": [
           {
-            "name": "Afghanistan",
+            "name": "Afghanistan"
           },
           {
-            "name": "China",
+            "name": "China"
           },
           {
-            "name": "India",
+            "name": "India"
           },
           {
-            "name": "Irkutsk",
+            "name": "Irkutsk"
           },
           {
-            "name": "Japan",
+            "name": "Japan"
           },
           {
-            "name": "Kamchatka",
+            "name": "Kamchatka"
           },
           {
-            "name": "Middle East",
+            "name": "Middle East"
           },
           {
-            "name": "Mongolia",
+            "name": "Mongolia"
           },
           {
-            "name": "Siam",
+            "name": "Siam"
           },
           {
-            "name": "Siberia",
+            "name": "Siberia"
           },
           {
-            "name": "Ural",
+            "name": "Ural"
           },
           {
-            "name": "Yakutsk",
+            "name": "Yakutsk"
           }
         ]
       },
@@ -108,16 +108,16 @@
         "bonus": 2,
         "countries": [
           {
-            "name": "Argentina",
+            "name": "Argentina"
           },
           {
-            "name": "Brazil",
+            "name": "Brazil"
           },
           {
-            "name": "Peru",
+            "name": "Peru"
           },
           {
-            "name": "Venezuela",
+            "name": "Venezuela"
           }
         ]
       },
@@ -126,22 +126,22 @@
         "bonus": 3,
         "countries": [
           {
-            "name": "Congo",
+            "name": "Congo"
           },
           {
-            "name": "East Africa",
+            "name": "East Africa"
           },
           {
-            "name": "Egypt",
+            "name": "Egypt"
           },
           {
-            "name": "Madagascar",
+            "name": "Madagascar"
           },
           {
-            "name": "North Africa",
+            "name": "North Africa"
           },
           {
-            "name": "South Africa",
+            "name": "South Africa"
           }
         ]
       },
@@ -150,16 +150,16 @@
         "bonus": 2,
         "countries": [
           {
-            "name": "Eastern Australia",
+            "name": "Eastern Australia"
           },
           {
-            "name": "Indonesia",
+            "name": "Indonesia"
           },
           {
-            "name": "New Guinea",
+            "name": "New Guinea"
           },
           {
-            "name": "Western Australia",
+            "name": "Western Australia"
           }
         ]
       }
