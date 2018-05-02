@@ -1,6 +1,5 @@
 package de.htwg.se.empire.model.grid
 
-import com.sun.deploy.util.StringUtils
 import de.htwg.se.empire.model.player.Player
 import org.apache.logging.log4j.{ LogManager, Logger }
 
