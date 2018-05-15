@@ -1,7 +1,7 @@
 package de.htwg.se.empire.model.grid
 
 import de.htwg.se.empire.model.player.Player
-import org.apache.logging.log4j.{ LogManager, Logger }
+import org.apache.logging.log4j.{LogManager, Logger}
 
 import scala.collection.mutable.ListBuffer
 
@@ -25,6 +25,12 @@ case class PlayingField(continents: List[Continent]) {
     } else {
       LOG.info("Cannot find Player")
     }
+  }
+
+  def getAllCountries: List[Country] = {
+    var countries = new ListBuffer[Country]
+    continents.foreach(c => countries ++= c.countries)
+    countries.toList
   }
 
   override def toString: String = {
