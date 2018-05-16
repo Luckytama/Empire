@@ -1,5 +1,7 @@
 package de.htwg.se.empire.controller
 
+import java.io.FileNotFoundException
+
 import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.parser.impl.JsonParser
@@ -11,14 +13,25 @@ class InitController {
 
   val LOG: Logger = LogManager.getLogger(this.getClass)
 
-  def setUpGrid(pathToGrid: String, players: String*): PlayingField = {
+  def setUpGrid(pathToGrid: String, players: String*): Option[PlayingField] = {
     val parser = new JsonParser
-    val playingField = parser.parseFileToPlayingField(pathToGrid)
-    players.foreach(p => playingField.addPlayer(Player(p)))
-    playingField
+    try {
+      val playingField = parser.parseFileToPlayingField(pathToGrid)
+      players.foreach(p => playingField.addPlayer(Player(p)))
+      Some.apply(playingField)
+    } catch {
+      case fnfe: FileNotFoundException =>
+        LOG.info("Can't find file with path ", pathToGrid)
+        None
+      case _ => None
+    }
   }
 
   def randDistributeSoldiers(playingField: PlayingField): Unit = {
+    if (playingField == null) {
+      LOG.info("There is no playing field set yet")
+      return
+    }
     val allCountries = playingField.getAllCountries
     val shuffeldCountries = Random.shuffle(allCountries)
     if (1 <= playingField.players.length) {
@@ -29,7 +42,6 @@ class InitController {
       }
     } else {
       LOG.info("There are to less players to start the game")
-      None
     }
   }
 
