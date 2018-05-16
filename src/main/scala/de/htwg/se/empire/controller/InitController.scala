@@ -5,7 +5,7 @@ import java.io.FileNotFoundException
 import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.parser.impl.JsonParser
-import org.apache.logging.log4j.{LogManager, Logger}
+import org.apache.logging.log4j.{ LogManager, Logger }
 
 import scala.util.Random
 
@@ -23,7 +23,9 @@ class InitController {
       case fnfe: FileNotFoundException =>
         LOG.info("Can't find file with path ", pathToGrid)
         None
-      case _ => None
+      case _ =>
+        LOG.error("Unhandled exception")
+        None
     }
   }
 
@@ -48,8 +50,7 @@ class InitController {
   def splitList[T](l: List[T], pieces: Int, len: Int = -1, done: Int = 0, result: List[List[T]] = Nil): List[List[T]] = {
     if (l.isEmpty) {
       result.reverse
-    }
-    else {
+    } else {
       val n = if (len < 0) l.length else len
       val ls = l.splitAt((n.toLong * (done + 1) / pieces - n.toLong * done / pieces).toInt)
       splitList(ls._2, pieces, n, done + 1, ls._1 :: result)
