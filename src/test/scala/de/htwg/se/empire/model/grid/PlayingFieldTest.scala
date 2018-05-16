@@ -26,6 +26,9 @@ class PlayingFieldTest extends WordSpec with Matchers {
         playingField.addPlayer(player)
         playingField.players.length should be(1)
       }
+      "return zero soldiers for player" in {
+        playingField.getNumberOfSoldiersFromPlayer(player) should be(0)
+      }
       "have a nice String representation" in {
         playingField.toString should be("Players: Hannes => countries: []\nContinents: Europa => Bonus: 5, Countries: [Deutschland]")
       }

@@ -33,6 +33,12 @@ case class PlayingField(continents: List[Continent]) {
     countries.toList
   }
 
+  def getNumberOfSoldiersFromPlayer(player: Player): Int = {
+    var count: Int = 0
+    player.countries.foreach(c => count += c.soldiers)
+    count
+  }
+
   override def toString: String = {
     var output = new StringBuilder
     if (players.nonEmpty) {
