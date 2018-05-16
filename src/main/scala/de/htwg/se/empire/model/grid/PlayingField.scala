@@ -27,6 +27,16 @@ case class PlayingField(continents: List[Continent]) {
     }
   }
 
+  def getPlayer(playerName: String): Option[Player] = {
+    val p = players find (_.name == playerName)
+    if (p.isDefined) {
+      p
+    } else {
+      LOG.info("Player not found with name ", playerName)
+      None
+    }
+  }
+
   override def toString: String = {
     var output = new StringBuilder
     if (players.nonEmpty) {
