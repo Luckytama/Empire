@@ -23,7 +23,7 @@ class InitController {
       case fnfe: FileNotFoundException =>
         LOG.info("Can't find file with path ", pathToGrid)
         None
-      case _ =>
+      case _: Throwable =>
         LOG.error("Unhandled exception")
         None
     }
@@ -38,7 +38,6 @@ class InitController {
     val shuffeldCountries = Random.shuffle(allCountries)
     if (1 <= playingField.players.length) {
       val playerCountries = splitList(shuffeldCountries, playingField.players.length) zip playingField.players
-      print(playerCountries)
       for ((cList, p) <- playerCountries) {
         cList.foreach(c => p.addCountry(c))
       }
