@@ -11,5 +11,8 @@ class ReinforcementControllerTest extends WordSpec with Matchers {
     "calc soldiers to distribute for player" in {
 
     }
+    "set soldiers to country for player" in {
+
+    }
   }
 }
