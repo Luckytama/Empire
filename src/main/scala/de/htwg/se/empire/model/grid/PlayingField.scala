@@ -27,6 +27,12 @@ case class PlayingField(continents: List[Continent]) {
     }
   }
 
+  def getAllCountries: List[Country] = {
+    var countries = new ListBuffer[Country]
+    continents.foreach(c => countries ++= c.countries)
+    countries.toList
+  }
+
   def getPlayer(playerName: String): Option[Player] = {
     val p = players find (_.name == playerName)
     if (p.isDefined) {

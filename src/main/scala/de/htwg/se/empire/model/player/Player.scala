@@ -21,6 +21,12 @@ case class Player(name: String) {
     }
   }
 
+  def getNumberOfAllSoldiers: Int = {
+    var count: Int = 0
+    countries.foreach(c => count += c.soldiers)
+    count
+  }
+
   def getCountryAmount: Int = countries.size
 
   override def toString: String = name + " => " + "countries: [" + countries.mkString(",") + "]"
