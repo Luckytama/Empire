@@ -43,6 +43,16 @@ case class PlayingField(continents: List[Continent]) {
     }
   }
 
+  def getCountry(countryName: String): Option[Country] = {
+    val c = getAllCountries find (_.name == countryName)
+    if (c.isDefined) {
+      c
+    } else {
+      LOG.info("Country not found with ", countryName)
+      None
+    }
+  }
+
   override def toString: String = {
     var output = new StringBuilder
     if (players.nonEmpty) {

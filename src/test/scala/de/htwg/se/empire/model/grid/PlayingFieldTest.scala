@@ -16,6 +16,7 @@ class PlayingFieldTest extends WordSpec with Matchers {
       }
       "have countries" in {
         playingField.continents.length should be(1)
+        playingField.getCountry("Deutschland").isDefined should be(true)
       }
       "have a nice String representation" in {
         playingField.toString should be("Continents: Europa => Bonus: 5, Countries: [Deutschland]")
