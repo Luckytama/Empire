@@ -18,6 +18,8 @@ class InitController {
   val INIT_SOLDIERS_3PLAYER = 35
   val INIT_SOLDIERS_2PLAYER = 40
 
+  val INIT_VALUE_SOLDIERS_PER_COUNTRY = 1
+
   def setUpGrid(pathToGrid: String, players: String*): Option[PlayingField] = {
     val parser = new JsonParser
     try {
@@ -43,11 +45,13 @@ class InitController {
       return
     }
     val allCountries = playingField.getAllCountries
-    val shuffeldCountries = Random.shuffle(allCountries)
     if (1 <= playingField.players.length) {
-      val playerCountries = splitList(shuffeldCountries, playingField.players.length) zip playingField.players
+      val playerCountries = splitList(Random.shuffle(allCountries), playingField.players.length) zip playingField.players
       for ((cList, p) <- playerCountries) {
-        cList.foreach(c => p.addCountry(c))
+        for (c <- cList) {
+          c.addSoldiers(INIT_VALUE_SOLDIERS_PER_COUNTRY)
+          p.addCountry(c)
+        }
       }
     } else {
       LOG.info("There are to less players to start the game")
@@ -74,11 +78,17 @@ class InitController {
   }
 
   def distribute(playingField: PlayingField, soldiers: Int): Unit = {
-    playingField.players.foreach(p => distributeForPlayer(p, soldiers))
+    playingField.players.foreach(p => distributeSoldierToRandCountry(p, soldiers - p.getNumberOfAllSoldiers))
   }
 
-  def distributeForPlayer(player: Player, soldiers: Int): Unit = {
-
+  def distributeSoldierToRandCountry(player: Player, soldiers: Int): Unit = {
+    if (player.countries.isEmpty) {
+      LOG.info("There are no countries set for player ", player.name)
+      None
+    } else if (soldiers != 0) {
+      player.countries(Random.nextInt(player.countries.length)).addSoldiers(1)
+      distributeSoldierToRandCountry(player, soldiers - 1)
+    }
   }
 
   def splitList[T](l: List[T], pieces: Int, len: Int = -1, done: Int = 0, result: List[List[T]] = Nil): List[List[T]] = {
