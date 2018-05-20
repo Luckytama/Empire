@@ -2,8 +2,8 @@ package de.htwg.se.empire.model.grid
 
 import de.htwg.se.empire.model.player.Player
 import org.junit.runner.RunWith
-import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.{ Matchers, WordSpec }
 
 @RunWith(classOf[JUnitRunner])
 class PlayingFieldTest extends WordSpec with Matchers {

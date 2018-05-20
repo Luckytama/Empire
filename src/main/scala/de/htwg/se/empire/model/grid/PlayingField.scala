@@ -27,6 +27,12 @@ case class PlayingField(continents: List[Continent]) {
     }
   }
 
+  def getAllCountries: List[Country] = {
+    var countries = new ListBuffer[Country]
+    continents.foreach(c => countries ++= c.countries)
+    countries.toList
+  }
+
   override def toString: String = {
     var output = new StringBuilder
     if (players.nonEmpty) {
