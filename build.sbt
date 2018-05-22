@@ -20,5 +20,7 @@ libraryDependencies += "org.apache.logging.log4j" % "log4j-api" % "2.11.0"
 libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % "2.11.0"
 libraryDependencies += "org.json4s" %% "json4s-jackson" % "3.3.0"
 
+fork in run := true
+
 
 fork in run := true
