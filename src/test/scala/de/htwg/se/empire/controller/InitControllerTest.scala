@@ -2,7 +2,7 @@ package de.htwg.se.empire.controller
 
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 @RunWith(classOf[JUnitRunner])
 class InitControllerTest extends WordSpec with Matchers {
