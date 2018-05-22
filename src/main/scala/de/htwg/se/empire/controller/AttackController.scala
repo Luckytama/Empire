@@ -4,4 +4,6 @@ import de.htwg.se.empire.model.grid.Country
 
 trait AttackController {
   def attackCountry(src: Country, target: Country, numberOfSoldiers: Int)
+
+  def moveSoldiers(src: Country, target: Country, numberOfSoldiers: Int)
 }

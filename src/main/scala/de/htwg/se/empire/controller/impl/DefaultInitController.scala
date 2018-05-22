@@ -77,11 +77,11 @@ class DefaultInitController {
     }
   }
 
-  def distribute(playingField: PlayingField, soldiers: Int): Unit = {
+  private def distribute(playingField: PlayingField, soldiers: Int): Unit = {
     playingField.players.foreach(p => distributeSoldierToRandCountry(p, soldiers - p.getNumberOfAllSoldiers))
   }
 
-  def distributeSoldierToRandCountry(player: Player, soldiers: Int): Unit = {
+  private def distributeSoldierToRandCountry(player: Player, soldiers: Int): Unit = {
     if (player.countries.isEmpty) {
       LOG.info("There are no countries set for player ", player.name)
       None
@@ -91,7 +91,7 @@ class DefaultInitController {
     }
   }
 
-  def splitList[T](l: List[T], pieces: Int, len: Int = -1, done: Int = 0, result: List[List[T]] = Nil): List[List[T]] = {
+  private def splitList[T](l: List[T], pieces: Int, len: Int = -1, done: Int = 0, result: List[List[T]] = Nil): List[List[T]] = {
     if (l.isEmpty) {
       result.reverse
     } else {

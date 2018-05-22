@@ -28,6 +28,11 @@ class DefaultAttackController extends AttackController{
     }
   }
 
+  def moveSoldiers(src: Country, target: Country, numberOfSoldiers: Int): Unit = {
+    src.removeSoldiers(numberOfSoldiers)
+    target.addSoldiers(numberOfSoldiers)
+  }
+
   private def generateAttackingValues(numberOfSoldiers: Int): Array[Int] = {
     numberOfSoldiers match {
       case 1 =>

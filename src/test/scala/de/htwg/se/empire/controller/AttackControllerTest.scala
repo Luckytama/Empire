@@ -22,8 +22,19 @@ class AttackControllerTest extends WordSpec with Matchers{
       attackingCountry.addSoldiers(2)
       defendingCountry.addSoldiers(1)
       attackController.attackCountry(attackingCountry, defendingCountry, 1)
-      "should have a country with one soldier less" in {
+      "have a country with one soldier less" in {
         if (attackingCountry.soldiers == 2) defendingCountry.soldiers should be(0) else attackingCountry.soldiers should be(1)
+      }
+    }
+    "Somebody wants to move soldiers from one to another country" should {
+      val country1 = Country("Test1", List("Test2"))
+      val country2 = Country("Test2", List("Test1"))
+      country1.addSoldiers(5)
+      country2.addSoldiers(0)
+      "have the moved amount stored in the target country" in {
+        attackController.moveSoldiers(country1, country2, 4)
+        country1.soldiers should be(1)
+        country2.soldiers should be(4)
       }
     }
   }
