@@ -1,5 +1,6 @@
 package de.htwg.se.empire.controller
 
+import de.htwg.se.empire.controller.impl.DefaultInitController
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{Matchers, WordSpec}
@@ -8,13 +9,13 @@ import org.scalatest.{Matchers, WordSpec}
 class InitControllerTest extends WordSpec with Matchers {
   "A the Init Controller" when {
     "set up without players and with wrong path to file" should {
-      val initController = new InitController
+      val initController = new DefaultInitController
       "handle wrong path" in {
         initController.setUpGrid("/wrongPath") should be(None)
       }
     }
     "set up without players and with real path to file" should {
-      val initController = new InitController
+      val initController = new DefaultInitController
       val playingField = initController.setUpGrid("playingfield/EmpireData.json")
       "return a playing field without player" in {
         playingField.isDefined should be(true)
@@ -26,7 +27,7 @@ class InitControllerTest extends WordSpec with Matchers {
       }
     }
     "set up with players and with real path to file" should {
-      val initController = new InitController
+      val initController = new DefaultInitController
       val playingField = initController.setUpGrid("playingfield/EmpireData.json", "Hans", "Jürgen", "Karl")
       "return ap playing field with players" in {
         playingField.isDefined should be(true)
