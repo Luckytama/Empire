@@ -73,6 +73,9 @@ case class DefaultGamingController(var playingField: PlayingField) extends Gamin
     if (checkIfAttackIsValid(srcCountry, targetCountry, soldiers)) {
       attackController.attackCountry(playingField.getCountry(srcCountry).get, playingField.getCountry(targetCountry).get, soldiers)
       if (playingField.getCountry(targetCountry).get.soldiers == 0) {
+        val ownerTargetCountry = playingField.getPlayerForCountry(playingField.getCountry(targetCountry).get).get
+        ownerTargetCountry.countries.remove(ownerTargetCountry.countries.indexOf(playingField.getCountry(targetCountry).get))
+        playerOnTurn.addCountry(playingField.getCountry(targetCountry).get)
         print("You won how much soldiers do you want to move to " + targetCountry)
       } else {
         print("Defender has defended his country")
@@ -85,12 +88,27 @@ case class DefaultGamingController(var playingField: PlayingField) extends Gamin
   override def completeRound(): Unit = {
     playerOnTurn = getNextPlayer
     status = REINFORCEMENT
+    isPlayerDefeated
     changeToReinforcementPhase()
   }
 
   private def getNextPlayer: Player = {
     val idx = playingField.players.indexOf(playerOnTurn)
     if (idx + 1 == playingField.players.length) playingField.players.head else playingField.players(idx + 1)
+  }
+
+  private def isPlayerDefeated: Option[Player] = {
+    var defeatedPlayer: Option[Player] = None
+    playingField.players.foreach(p => if (p.countries.isEmpty) {
+      playingField.players.remove(playingField.players.indexOf(p))
+      defeatedPlayer = Some(p)
+      print(p.name + " is defeated")
+    })
+    if (playingField.players.length == 1) {
+      print(playingField.players.head + " won the game!!!!")
+      status = IDLE
+    }
+    defeatedPlayer
   }
 
   private def checkIfAttackIsValid(srcCountry: String, targetCountry: String, soldiers: Int): Boolean = {
@@ -106,10 +124,10 @@ case class DefaultGamingController(var playingField: PlayingField) extends Gamin
     }
   }
 
-  private def changeToAttackPhase(): String = {
+  private def changeToAttackPhase(): Unit = {
     if (playerOnTurn.handholdSoldiers == 0) {
       status = ATTACK
-      "You have successfully distribute all of your soldiers!\nAttack Phase starts"
+      print("You have successfully distribute all of your soldiers!\nAttack Phase starts")
     } else {
       ""
     }
