@@ -8,6 +8,7 @@ import org.apache.logging.log4j.{LogManager, Logger}
 
 case class DefaultGamingController(var playingField: PlayingField) extends GamingController {
 
+  //TODO: Change print() to View.display message
   val attackController = new DefaultAttackController
   val initController = new DefaultInitController
   val reinforcementController = new DefaultReinforcementController
@@ -17,7 +18,7 @@ case class DefaultGamingController(var playingField: PlayingField) extends Gamin
 
   val LOG: Logger = LogManager.getLogger(this.getClass)
 
-  def setUpPhase(pathToGrid: String, players: String*): Unit = {
+  override def setUpPhase(pathToGrid: String, players: String*): Unit = {
     status = SETUP
     val playingFieldOpt = initController.setUpGrid(pathToGrid, players: _*)
     if (playingFieldOpt.isDefined) {
@@ -25,46 +26,83 @@ case class DefaultGamingController(var playingField: PlayingField) extends Gamin
     }
   }
 
-  def addPlayer(players: String*): String = {
+  override def addPlayer(players: String*): Unit = {
     if (status != SETUP) {
-      "You can't add new Players at this time of the game"
+      print("You can't add new Players at this time of the game")
     } else {
       initController.addPlayers(playingField, players: _*)
-      "Players are successfully added."
+      print("Players are successfully added.")
     }
   }
 
-  def changeToGamePhase(): String = {
+  override def changeToGamePhase(): Unit = {
     if (checkIfPlayingFieldIsValid()) {
       initController.randDistributeCountries(playingField)
       initController.randDistributeSoldiers(playingField)
       status = REINFORCEMENT
-      "Game starts"
+      print("Game starts")
     } else {
-      "The playing field is not setup correct."
+      print("The playing field is not setup correct.")
     }
   }
 
-  def changeToReinforcementPhase(): String = {
+  override def changeToReinforcementPhase(): Unit = {
     if (status == REINFORCEMENT) {
       playerOnTurn = playingField.players.head
       playerOnTurn.handholdSoldiers = reinforcementController.calcSoldiersToDistribute(playingField, playerOnTurn)
-      playerOnTurn.name + " is on turn!\nYou have " + playerOnTurn.handholdSoldiers + " soldiers to distribute"
+      print(playerOnTurn.name + " is on turn!\nYou have " + playerOnTurn.handholdSoldiers + " soldiers to distribute")
     } else {
-      "You are not in the Reinforcement Phase"
+      print("You are not in the Reinforcement Phase")
     }
   }
 
-  def distributeSoldiers(soldiers: Int, countryName: String): String = {
+  override def distributeSoldiers(soldiers: Int, countryName: String): Unit = {
     if (status == REINFORCEMENT) {
       if (playerOnTurn.handholdSoldiers - soldiers >= 0) {
         reinforcementController.distributeSoldiers(playingField, countryName, soldiers)
         changeToAttackPhase()
       } else {
-        "You don't have that much soldiers to distribute"
+        print("You don't have that much soldiers to distribute")
       }
     } else {
-      "You are not in the Reinforcement Phase"
+      print("You are not in the Reinforcement Phase")
+    }
+  }
+
+  override def attackCountry(srcCountry: String, targetCountry: String, soldiers: Int): Unit = {
+    if (checkIfAttackIsValid(srcCountry, targetCountry, soldiers)) {
+      attackController.attackCountry(playingField.getCountry(srcCountry).get, playingField.getCountry(targetCountry).get, soldiers)
+      if (playingField.getCountry(targetCountry).get.soldiers == 0) {
+        print("You won how much soldiers do you want to move to " + targetCountry)
+      } else {
+        print("Defender has defended his country")
+      }
+    } else {
+      print("This is not a valid attack")
+    }
+  }
+
+  override def completeRound(): Unit = {
+    playerOnTurn = getNextPlayer
+    status = REINFORCEMENT
+    changeToReinforcementPhase()
+  }
+
+  private def getNextPlayer: Player = {
+    val idx = playingField.players.indexOf(playerOnTurn)
+    if (idx + 1 == playingField.players.length) playingField.players.head else playingField.players(idx + 1)
+  }
+
+  private def checkIfAttackIsValid(srcCountry: String, targetCountry: String, soldiers: Int): Boolean = {
+    val src = playingField.getCountry(srcCountry)
+    val target = playingField.getCountry(targetCountry)
+    if ((src.isDefined || target.isDefined)
+      && src.get.adjacentCountries.contains(target.get.name)
+      && (src.get.soldiers > soldiers) && (playerOnTurn.countries.contains(src.get)
+      && !playerOnTurn.countries.contains(target.get))) {
+      true
+    } else {
+      false
     }
   }
 
