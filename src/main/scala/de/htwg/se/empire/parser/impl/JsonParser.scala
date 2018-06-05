@@ -14,8 +14,9 @@ class JsonParser extends Parser {
   implicit val formats: DefaultFormats.type = DefaultFormats
 
   @throws(classOf[FileNotFoundException])
-  override def parseFile(path: String): PlayingField = {
+  override def parseFileToPlayingField(path: String): PlayingField = {
     val source: String = Source.fromFile(path).getLines().mkString
     parse(source).extract[PlayingField]
   }
+
 }
