@@ -36,6 +36,10 @@ class DefaultInitController {
     }
   }
 
+  def addPlayers(playingField: PlayingField, players: String*): Unit = {
+    players.foreach(p => playingField.addPlayer(Player(p)))
+  }
+
   /*
    * Distribute randomly all countries to all player with one soldiers in it
    */
