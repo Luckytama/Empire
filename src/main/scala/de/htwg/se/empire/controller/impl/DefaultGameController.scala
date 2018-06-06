@@ -1,12 +1,12 @@
 package de.htwg.se.empire.controller.impl
 
-import de.htwg.se.empire.controller.GamingController
+import de.htwg.se.empire.controller.GameController
 import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.util.Phase.{Phase, _}
 import org.apache.logging.log4j.{LogManager, Logger}
 
-case class DefaultGamingController(var playingField: PlayingField) extends GamingController {
+case class DefaultGameController(var playingField: PlayingField) extends GameController {
 
   //TODO: Change print() to View.display message
   val attackController = new DefaultAttackController
@@ -49,7 +49,7 @@ case class DefaultGamingController(var playingField: PlayingField) extends Gamin
   override def changeToReinforcementPhase(): Unit = {
     if (status == REINFORCEMENT) {
       playerOnTurn = playingField.players.head
-      playerOnTurn.handholdSoldiers = reinforcementController.calcSoldiersToDistribute(playingField, playerOnTurn)
+      playerOnTurn.handholdSoldiers = reinforcementController.calcSoldiersToDistribute(playerOnTurn)
       print(playerOnTurn.name + " is on turn!\nYou have " + playerOnTurn.handholdSoldiers + " soldiers to distribute")
     } else {
       print("You are not in the Reinforcement Phase")
@@ -91,6 +91,8 @@ case class DefaultGamingController(var playingField: PlayingField) extends Gamin
     isPlayerDefeated
     changeToReinforcementPhase()
   }
+
+  override def getCurrentPhase: Phase = status
 
   private def getNextPlayer: Player = {
     val idx = playingField.players.indexOf(playerOnTurn)

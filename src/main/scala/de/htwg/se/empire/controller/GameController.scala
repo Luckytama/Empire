@@ -1,6 +1,8 @@
 package de.htwg.se.empire.controller
 
-trait GamingController {
+import de.htwg.se.empire.util.Phase.Phase
+
+trait GameController {
 
   def setUpPhase(pathToGrid: String, players: String*): Unit
 
@@ -15,4 +17,6 @@ trait GamingController {
   def attackCountry(srcCountry: String, targetCountry: String, soldiers: Int): Unit
 
   def completeRound(): Unit
+
+  def getCurrentPhase: Phase
 }

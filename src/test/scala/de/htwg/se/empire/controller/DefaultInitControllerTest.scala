@@ -6,7 +6,7 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.{Matchers, WordSpec}
 
 @RunWith(classOf[JUnitRunner])
-class InitControllerTest extends WordSpec with Matchers {
+class DefaultInitControllerTest extends WordSpec with Matchers {
   "A the Init Controller" when {
     "set up without players and with wrong path to file" should {
       val initController = new DefaultInitController
