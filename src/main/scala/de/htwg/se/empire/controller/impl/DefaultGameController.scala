@@ -8,7 +8,7 @@ import org.apache.logging.log4j.{LogManager, Logger}
 
 case class DefaultGameController(var playingField: PlayingField) extends GameController {
 
-  //TODO: Change print() to View.display message
+  //TODO: Change println() to View.display message
   val attackController = new DefaultAttackController
   val initController = new DefaultInitController
   val reinforcementController = new DefaultReinforcementController
@@ -28,10 +28,10 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
 
   override def addPlayer(players: String*): Unit = {
     if (status != SETUP) {
-      print("You can't add new Players at this time of the game")
+      println("You can't add new Players at this time of the game")
     } else {
       initController.addPlayers(playingField, players: _*)
-      print("Players are successfully added.")
+      println("Players are successfully added.")
     }
   }
 
@@ -40,9 +40,9 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
       initController.randDistributeCountries(playingField)
       initController.randDistributeSoldiers(playingField)
       status = REINFORCEMENT
-      print("Game starts")
+      println("Game starts")
     } else {
-      print("The playing field is not setup correct.")
+      println("The playing field is not setup correct.")
     }
   }
 
@@ -50,9 +50,9 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
     if (status == REINFORCEMENT) {
       playerOnTurn = playingField.players.head
       playerOnTurn.handholdSoldiers = reinforcementController.calcSoldiersToDistribute(playerOnTurn)
-      print(playerOnTurn.name + " is on turn!\nYou have " + playerOnTurn.handholdSoldiers + " soldiers to distribute")
+      println(playerOnTurn.name + " is on turn!\nYou have " + playerOnTurn.handholdSoldiers + " soldiers to distribute")
     } else {
-      print("You are not in the Reinforcement Phase")
+      println("You are not in the Reinforcement Phase")
     }
   }
 
@@ -60,12 +60,15 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
     if (status == REINFORCEMENT) {
       if (playerOnTurn.handholdSoldiers - soldiers >= 0) {
         reinforcementController.distributeSoldiers(playingField, countryName, soldiers)
-        changeToAttackPhase()
+        playerOnTurn.handholdSoldiers -= soldiers
+        if (playerOnTurn.handholdSoldiers == 0) {
+          changeToAttackPhase()
+        }
       } else {
-        print("You don't have that much soldiers to distribute")
+        println("You don't have that much soldiers to distribute")
       }
     } else {
-      print("You are not in the Reinforcement Phase")
+      println("You are not in the Reinforcement Phase")
     }
   }
 
@@ -76,12 +79,12 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
         val ownerTargetCountry = playingField.getPlayerForCountry(playingField.getCountry(targetCountry).get).get
         ownerTargetCountry.countries.remove(ownerTargetCountry.countries.indexOf(playingField.getCountry(targetCountry).get))
         playerOnTurn.addCountry(playingField.getCountry(targetCountry).get)
-        print("You won how much soldiers do you want to move to " + targetCountry)
+        println("You won how much soldiers do you want to move to " + targetCountry)
       } else {
-        print("Defender has defended his country")
+        println("Defender has defended his country")
       }
     } else {
-      print("This is not a valid attack")
+      println("This is not a valid attack")
     }
   }
 
@@ -104,10 +107,10 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
     playingField.players.foreach(p => if (p.countries.isEmpty) {
       playingField.players.remove(playingField.players.indexOf(p))
       defeatedPlayer = Some(p)
-      print(p.name + " is defeated")
+      println(p.name + " is defeated")
     })
     if (playingField.players.length == 1) {
-      print(playingField.players.head + " won the game!!!!")
+      println(playingField.players.head + " won the game!!!!")
       status = IDLE
     }
     defeatedPlayer
@@ -116,7 +119,7 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
   private def checkIfAttackIsValid(srcCountry: String, targetCountry: String, soldiers: Int): Boolean = {
     val src = playingField.getCountry(srcCountry)
     val target = playingField.getCountry(targetCountry)
-    if ((src.isDefined || target.isDefined)
+    if ((src.isDefined && target.isDefined)
       && src.get.adjacentCountries.contains(target.get.name)
       && (src.get.soldiers > soldiers) && (playerOnTurn.countries.contains(src.get)
       && !playerOnTurn.countries.contains(target.get))) {
@@ -129,16 +132,11 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
   private def changeToAttackPhase(): Unit = {
     if (playerOnTurn.handholdSoldiers == 0) {
       status = ATTACK
-      print("You have successfully distribute all of your soldiers!\nAttack Phase starts")
+      println("You have successfully distribute all of your soldiers!\nAttack Phase starts")
     } else {
       ""
     }
   }
 
-  private def checkIfPlayingFieldIsValid(): Boolean = {
-    if (playingField.getAllCountries.nonEmpty && playingField.players.length >= 2) {
-      false
-    }
-    true
-  }
+  private def checkIfPlayingFieldIsValid(): Boolean = if (playingField.getAllCountries.nonEmpty && playingField.players.length >= 2) true else false
 }
