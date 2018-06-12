@@ -37,7 +37,7 @@ class DefaultInitController extends InitController {
     }
   }
 
-  def addPlayers(playingField: PlayingField, players: String*): Unit = {
+  def addPlayers(playingField: Grid, players: String*): Unit = {
     players.foreach(p => playingField.addPlayer(Player(p)))
   }
 

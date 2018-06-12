@@ -2,20 +2,17 @@ package de.htwg.se.empire.controller
 
 import de.htwg.se.empire.controller.impl.DefaultGameController
 import de.htwg.se.empire.model.grid.PlayingField
-import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.util.Phase._
 import org.junit.runner.RunWith
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.{FlatSpec, Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.mockito.MockitoSugar
+import org.scalatest.{Matchers, WordSpec}
 
 @RunWith(classOf[JUnitRunner])
 class DefaultGameControllerTest extends WordSpec with Matchers {
 
   "The Game Controller" when {
     "new" should {
-      val playingField = PlayingField(null)
+      val playingField = new PlayingField(null)
       val gameController = DefaultGameController(playingField)
       "have a empty Playing Field" in {
         gameController.playingField should be(playingField)
@@ -33,7 +30,7 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
       val gameController = DefaultGameController(playingField)
       gameController.setUpPhase("playingfield/EmpireData.json")
       "have a non empty Playing Field" in {
-        gameController.playingField.continents should not be(null)
+        gameController.playingField.continents should not be (null)
       }
       "have no players" in {
         gameController.playingField.players.isEmpty should be(true)
@@ -51,7 +48,7 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
       val gameController = DefaultGameController(playingField)
       gameController.setUpPhase("playingfield/EmpireData.json", "Hans", "Markus")
       "have a non empty Playing Field" in {
-        gameController.playingField.continents should not be(null)
+        gameController.playingField.continents should not be (null)
       }
       "have set some players" in {
         gameController.playingField.players.length should be(2)
@@ -66,10 +63,10 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
       gameController.setUpPhase("playingfield/EmpireData.json", "Hans", "Markus")
       gameController.changeToGamePhase()
       "correctly distribute countries" in {
-        gameController.playingField.getPlayer("Hans").get.getCountryAmount should not be(0)
+        gameController.playingField.getPlayer("Hans").get.getCountryAmount should not be (0)
       }
       "correctly distribute soldiers" in {
-        gameController.playingField.getPlayer("Hans").get.getNumberOfAllSoldiers should not be(0)
+        gameController.playingField.getPlayer("Hans").get.getNumberOfAllSoldiers should not be (0)
       }
       "be in REINFORCEMENT Status" in {
         gameController.getCurrentPhase should be(REINFORCEMENT)
@@ -84,7 +81,7 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
         // To be implemented
       }
       "be not in REINFORCEMENT status" in {
-        gameController.getCurrentPhase should not be(REINFORCEMENT)
+        gameController.getCurrentPhase should not be (REINFORCEMENT)
       }
     }
     "try to change to Reinforcement Phase with status REINFORCEMENT" should {
@@ -94,10 +91,10 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
       gameController.changeToGamePhase()
       gameController.changeToReinforcementPhase()
       "set a player who's on turn" in {
-        gameController.playerOnTurn.name should be ("Hans")
+        gameController.playerOnTurn.name should be("Hans")
       }
       "give the player handhold soldiers" in {
-        gameController.playerOnTurn.handholdSoldiers should not be(0)
+        gameController.playerOnTurn.handholdSoldiers should not be (0)
       }
     }
     "try to change to Reinforcement Phase without status REINFORCEMENT" should {

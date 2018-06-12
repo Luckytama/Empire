@@ -1,11 +1,13 @@
 package de.htwg.se.empire.model
 
-import de.htwg.se.empire.model.grid.Country
+import de.htwg.se.empire.model.grid.{ Continent, Country }
 import de.htwg.se.empire.model.player.Player
 
 import scala.collection.mutable.ListBuffer
 
 trait Grid {
+
+  def continents: List[Continent]
 
   var players: ListBuffer[Player]
 

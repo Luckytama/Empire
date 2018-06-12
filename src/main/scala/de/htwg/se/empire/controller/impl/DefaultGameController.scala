@@ -1,17 +1,20 @@
 package de.htwg.se.empire.controller.impl
 
-import de.htwg.se.empire.controller.GameController
-import de.htwg.se.empire.model.grid.PlayingField
+import com.google.inject.{ Guice, Inject, Injector }
+import de.htwg.se.empire.EmpireModule
+import de.htwg.se.empire.controller.{ AttackController, GameController, InitController, ReinforcementController }
+import de.htwg.se.empire.model.Grid
 import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.util.Phase.{ Phase, _ }
 import org.apache.logging.log4j.{ LogManager, Logger }
 
-case class DefaultGameController(var playingField: PlayingField) extends GameController {
+case class DefaultGameController @Inject() (var playingField: Grid) extends GameController {
 
-  //TODO: Change println() to View.display message
-  val attackController = new DefaultAttackController
-  val initController = new DefaultInitController
-  val reinforcementController = new DefaultReinforcementController
+  //TODO: Change println to View.display message
+  val injector: Injector = Guice.createInjector(new EmpireModule)
+  val attackController: AttackController = injector.getInstance(classOf[AttackController])
+  val initController: InitController = injector.getInstance(classOf[InitController])
+  val reinforcementController: ReinforcementController = injector.getInstance(classOf[ReinforcementController])
 
   var status: Phase = IDLE
   var playerOnTurn: Player = _
@@ -49,7 +52,7 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
   override def changeToReinforcementPhase(): Unit = {
     if (status == REINFORCEMENT) {
       playerOnTurn = playingField.players.head
-      playerOnTurn.handholdSoldiers = reinforcementController.calcSoldiersToDistribute(playerOnTurn)
+      playerOnTurn.handholdSoldiers = reinforcementController.calcSoldiersToDistribute(playingField, playerOnTurn)
       println(playerOnTurn.name + " is on turn!\nYou have " + playerOnTurn.handholdSoldiers + " soldiers to distribute")
     } else {
       println("You are not in the Reinforcement Phase")
