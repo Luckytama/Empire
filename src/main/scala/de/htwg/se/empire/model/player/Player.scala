@@ -1,7 +1,7 @@
 package de.htwg.se.empire.model.player
 
 import de.htwg.se.empire.model.grid.Country
-import org.apache.logging.log4j.{LogManager, Logger}
+import org.apache.logging.log4j.{ LogManager, Logger }
 
 import scala.collection.mutable.ListBuffer
 
