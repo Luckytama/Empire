@@ -1,7 +1,7 @@
 package de.htwg.se.empire.controller.impl
 
 import de.htwg.se.empire.controller.ReinforcementController
-import de.htwg.se.empire.model.grid.PlayingField
+import de.htwg.se.empire.model.Grid
 import de.htwg.se.empire.model.player.Player
 import org.apache.logging.log4j.{ LogManager, Logger }
 
@@ -12,7 +12,7 @@ class DefaultReinforcementController extends ReinforcementController {
   /*
    * Player gets one soldier for every 3 countries he have, but minimum 3
    */
-  //TODO: savely remove playingfield from method
+  def calcSoldiersToDistribute(playingField: Grid, playerName: String): Int = {
   def calcSoldiersToDistribute(playingField: PlayingField, player: Player): Int = {
     val bonus = getBonus(playingField, player)
     if (player.countries.length / 3 > 3) (player.countries.length / 3) + bonus else 3 + bonus
@@ -28,7 +28,7 @@ class DefaultReinforcementController extends ReinforcementController {
     bonus
   }
 
-  def distributeSoldiers(playingField: PlayingField, countryName: String, soldiers: Int): Unit = {
+  def distributeSoldiers(playingField: Grid, countryName: String, soldiers: Int): Unit = {
     val country = playingField.getCountry(countryName)
     if (country.isDefined) country.get.addSoldiers(soldiers) //else inform view
   }
