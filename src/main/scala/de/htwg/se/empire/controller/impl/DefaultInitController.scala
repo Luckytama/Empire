@@ -2,14 +2,15 @@ package de.htwg.se.empire.controller.impl
 
 import java.io.FileNotFoundException
 
-import de.htwg.se.empire.model.grid.PlayingField
+import de.htwg.se.empire.controller.InitController
+import de.htwg.se.empire.model.Grid
 import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.parser.impl.JsonParser
-import org.apache.logging.log4j.{LogManager, Logger}
+import org.apache.logging.log4j.{ LogManager, Logger }
 
 import scala.util.Random
 
-class DefaultInitController {
+class DefaultInitController extends InitController {
 
   val LOG: Logger = LogManager.getLogger(this.getClass)
 
@@ -20,7 +21,7 @@ class DefaultInitController {
 
   val INIT_VALUE_SOLDIERS_PER_COUNTRY = 1
 
-  def setUpGrid(pathToGrid: String, players: String*): Option[PlayingField] = {
+  def setUpGrid(pathToGrid: String, players: String*): Option[Grid] = {
     val parser = new JsonParser
     try {
       val playingField = parser.parseFileToPlayingField(pathToGrid)
@@ -39,7 +40,7 @@ class DefaultInitController {
   /*
    * Distribute randomly all countries to all player with one soldiers in it
    */
-  def randDistributeCountries(playingField: PlayingField): Unit = {
+  def randDistributeCountries(playingField: Grid): Unit = {
     if (playingField == null) {
       LOG.info("There is no playing field set yet")
       return
@@ -62,7 +63,7 @@ class DefaultInitController {
    * Distribute soldiers
    * 5 Players: 25, 4 Players: 30, 3 Players: 35, 2 Players: 40
    */
-  def randDistributeSoldiers(playingField: PlayingField): Unit = {
+  def randDistributeSoldiers(playingField: Grid): Unit = {
     playingField.players.length match {
       case 5 =>
         distribute(playingField, INIT_SOLDIERS_5PLAYER)
@@ -77,7 +78,7 @@ class DefaultInitController {
     }
   }
 
-  private def distribute(playingField: PlayingField, soldiers: Int): Unit = {
+  private def distribute(playingField: Grid, soldiers: Int): Unit = {
     playingField.players.foreach(p => distributeSoldierToRandCountry(p, soldiers - p.getNumberOfAllSoldiers))
   }
 
