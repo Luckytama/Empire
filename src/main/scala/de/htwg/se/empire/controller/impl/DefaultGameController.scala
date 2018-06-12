@@ -3,8 +3,8 @@ package de.htwg.se.empire.controller.impl
 import de.htwg.se.empire.controller.GameController
 import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.model.player.Player
-import de.htwg.se.empire.util.Phase.{Phase, _}
-import org.apache.logging.log4j.{LogManager, Logger}
+import de.htwg.se.empire.util.Phase.{ Phase, _ }
+import org.apache.logging.log4j.{ LogManager, Logger }
 
 case class DefaultGameController(var playingField: PlayingField) extends GameController {
 
@@ -122,7 +122,7 @@ case class DefaultGameController(var playingField: PlayingField) extends GameCon
     if ((src.isDefined && target.isDefined)
       && src.get.adjacentCountries.contains(target.get.name)
       && (src.get.soldiers > soldiers) && (playerOnTurn.countries.contains(src.get)
-      && !playerOnTurn.countries.contains(target.get))) {
+        && !playerOnTurn.countries.contains(target.get))) {
       true
     } else {
       false
