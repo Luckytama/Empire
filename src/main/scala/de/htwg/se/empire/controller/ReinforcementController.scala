@@ -1,10 +1,9 @@
 package de.htwg.se.empire.controller
 
-import de.htwg.se.empire.model.grid.PlayingField
-import de.htwg.se.empire.model.player.Player
+import de.htwg.se.empire.model.Grid
 
 trait ReinforcementController {
-  def calcSoldiersToDistribute(player: Player): Int
+  def calcSoldiersToDistribute(playingField: Grid, playerName: String): Int
 
-  def distributeSoldiers(playingField: PlayingField, countryName: String, soldiers: Int): Unit
+  def distributeSoldiers(playingField: Grid, countryName: String, soldiers: Int)
 }
