@@ -1,12 +1,13 @@
 package de.htwg.se.empire.controller.impl
 
-import com.google.inject.{ Guice, Inject, Injector }
+import com.google.inject.{Guice, Inject, Injector}
 import de.htwg.se.empire.EmpireModule
-import de.htwg.se.empire.controller.{ AttackController, GameController, InitController, ReinforcementController }
+import de.htwg.se.empire.controller.{AttackController, GameController, InitController, ReinforcementController}
 import de.htwg.se.empire.model.Grid
+import de.htwg.se.empire.model.grid.Country
 import de.htwg.se.empire.model.player.Player
-import de.htwg.se.empire.util.Phase.{ Phase, _ }
-import org.apache.logging.log4j.{ LogManager, Logger }
+import de.htwg.se.empire.util.Phase.{Phase, _}
+import org.apache.logging.log4j.{LogManager, Logger}
 
 case class DefaultGameController @Inject() (var playingField: Grid) extends GameController {
 
@@ -82,7 +83,7 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
         val ownerTargetCountry = playingField.getPlayerForCountry(playingField.getCountry(targetCountry).get).get
         ownerTargetCountry.countries.remove(ownerTargetCountry.countries.indexOf(playingField.getCountry(targetCountry).get))
         playerOnTurn.addCountry(playingField.getCountry(targetCountry).get)
-        println("You won how much soldiers do you want to move to " + targetCountry)
+        status = MOVING
       } else {
         println("Defender has defended his country")
       }
@@ -135,9 +136,19 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
   private def changeToAttackPhase(): Unit = {
     if (playerOnTurn.handholdSoldiers == 0) {
       status = ATTACK
-      println("You have successfully distribute all of your soldiers!\nAttack Phase starts")
+      LOG.info("You have successfully distribute all of your soldiers!\nAttack Phase starts")
     } else {
       ""
+    }
+  }
+
+  def moveSoldiers(src: Country, target: Country, numberOfSoldiers: Int): Unit = {
+    if (src.soldiers - numberOfSoldiers >= 1 && playerOnTurn.countries.contains(src) && playerOnTurn.countries.contains(target)) {
+      src.soldiers -= numberOfSoldiers
+      target.soldiers += numberOfSoldiers
+      status = ATTACK
+    } else {
+      LOG.info("Illegal move!")
     }
   }
 
