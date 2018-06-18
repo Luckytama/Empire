@@ -1,5 +1,9 @@
 package de.htwg.se.empire
 
+import de.htwg.se.empire.controller.impl.{ DefaultGameController, DefaultInitController }
+import de.htwg.se.empire.model.grid.PlayingField
+import de.htwg.se.empire.view.TUI
+
 import com.google.inject.{ Guice, Injector }
 import de.htwg.se.empire.model.Grid
 import de.htwg.se.empire.parser.Parser
@@ -12,11 +16,15 @@ object Empire {
   val playingField: Grid = injector.getInstance(classOf[Grid])
 
   def main(args: Array[String]): Unit = {
+    val tui = new TUI()
+    var playingField: PlayingField = null
+    val gameController = DefaultGameController(playingField)
+
+    println("Press '1' to start a new game or 'q' to exit the game:")
     var input: String = ""
-    //TODO: create field
     do {
       input = readLine()
-      //TODO: print field and pass input to TUI
+      tui.processInput(input, gameController)
     } while (input != "q")
   }
 
