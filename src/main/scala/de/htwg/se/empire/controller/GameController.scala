@@ -1,8 +1,13 @@
 package de.htwg.se.empire.controller
 
+import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.util.Phase.Phase
 
 trait GameController {
+
+  def status: Phase
+
+  def playerOnTurn: Player
 
   def setUpPhase(pathToGrid: String, players: String*): Unit
 

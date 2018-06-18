@@ -16,7 +16,7 @@ class DefaultReinforcementControllerTest extends WordSpec with Matchers {
     val playingField = PlayingField(List(Continent("Europe", 5, List(sampleCountry))))
     player.addCountry(sampleCountry)
     "calculate minimum Soldiers to distribute" in {
-      reinforcementController.calcSoldiersToDistribute(player) should be(3)
+      reinforcementController.calcSoldiersToDistribute(playingField, player) should be(8)
     }
     "calculate correct amount of Soldiers to distribute" in {
       player.addCountry(Country("Italy", null))
@@ -31,7 +31,7 @@ class DefaultReinforcementControllerTest extends WordSpec with Matchers {
       player.addCountry(Country("Denmark", null))
       player.addCountry(Country("Netherlands", null))
 
-      reinforcementController.calcSoldiersToDistribute(player) should be(4)
+      reinforcementController.calcSoldiersToDistribute(playingField, player) should be(4)
     }
     "distribute soldiers" in {
       reinforcementController.distributeSoldiers(playingField, sampleCountry.name, 5)

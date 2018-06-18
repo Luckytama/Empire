@@ -8,6 +8,8 @@ import scala.collection.mutable.ListBuffer
 
 case class PlayingField(continents: List[Continent]) extends Grid {
 
+  def this() = this(List.empty[Continent])
+
   var players: ListBuffer[Player] = ListBuffer()
 
   val LOG: Logger = LogManager.getLogger(this.getClass)

@@ -37,7 +37,7 @@ class DefaultInitController extends InitController {
     }
   }
 
-  def addPlayers(playingField: PlayingField, players: String*): Unit = {
+  def addPlayers(playingField: Grid, players: String*): Unit = {
     players.foreach(p => playingField.addPlayer(Player(p)))
   }
 
@@ -45,10 +45,6 @@ class DefaultInitController extends InitController {
    * Distribute randomly all countries to all player with one soldiers in it
    */
   def randDistributeCountries(playingField: Grid): Unit = {
-    if (playingField == null) {
-      LOG.info("There is no playing field set yet")
-      return
-    }
     val allCountries = playingField.getAllCountries
     if (1 <= playingField.players.length) {
       val playerCountries = splitList(Random.shuffle(allCountries), playingField.players.length) zip playingField.players
@@ -91,7 +87,7 @@ class DefaultInitController extends InitController {
       LOG.info("There are no countries set for player ", player.name)
       None
     } else if (soldiers != 0) {
-      player.countries(Random.nextInt(player.countries.length + 1)).addSoldiers(1)
+      player.countries(Random.nextInt(player.countries.length)).addSoldiers(1)
       distributeSoldierToRandCountry(player, soldiers - 1)
     }
   }
