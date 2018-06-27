@@ -1,8 +1,8 @@
 package de.htwg.se.empire
 
 import com.google.inject.AbstractModule
-import de.htwg.se.empire.controller.impl.{DefaultAttackController, DefaultGameController, DefaultInitController, DefaultReinforcementController}
-import de.htwg.se.empire.controller.{AttackController, GameController, InitController, ReinforcementController}
+import de.htwg.se.empire.controller.impl.{ DefaultAttackController, DefaultGameController, DefaultInitController, DefaultReinforcementController }
+import de.htwg.se.empire.controller.{ AttackController, GameController, InitController, ReinforcementController }
 import de.htwg.se.empire.model.Grid
 import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.parser.Parser

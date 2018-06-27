@@ -27,20 +27,19 @@ class TUI {
       gameController.addPlayer(p)
     })
     gameController.changeToGamePhase()
+    this.processPlayerInput("", gameController)
   }
 
   def processPlayerInput(input: String, gameController: GameController): Unit = {
-    while (gameController.getCurrentPhase == Phase.REINFORCEMENT) {
-      var country: String = ""
-      var soldiers: Int = 0
-
-      println("Enter country to reinforce: ")
-      country = readLine()
-      println("Enter amount of soldiers: ")
-      soldiers = readLine().toInt
-      gameController.distributeSoldiers(soldiers, country)
-    }
     input match {
+      case "r" =>
+        var country: String = ""
+        var soldiers: Int = 0
+        println("Enter country to reinforce: ")
+        country = readLine()
+        println("Enter amount of soldiers: ")
+        soldiers = readLine().toInt
+        gameController.distributeSoldiers(soldiers, country)
       case "a" =>
         var srcCountry: String = ""
         var targetCountry: String = ""
@@ -52,10 +51,13 @@ class TUI {
         println("Enter amount of soldiers: ")
         soldiers = readLine().toInt
         gameController.attackCountry(srcCountry, targetCountry, soldiers)
+      case "p" =>
+        println(gameController.playerOnTurn.toString)
       case "c" =>
         gameController.completeRound()
+      case _ =>
+        println("Enter 'r' to reinforce, 'a' to attack country, 'p' for player info or 'c' to complete your round.")
     }
-
   }
 
 }

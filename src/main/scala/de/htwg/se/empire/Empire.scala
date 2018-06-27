@@ -1,6 +1,6 @@
 package de.htwg.se.empire
 
-import de.htwg.se.empire.controller.impl.{ DefaultGameController, DefaultInitController }
+import de.htwg.se.empire.controller.impl.DefaultGameController
 import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.view.TUI
 
@@ -20,7 +20,7 @@ object Empire {
     var playingField: PlayingField = null
     val gameController = DefaultGameController(playingField)
 
-    println("Press '1' to start a new game or 'q' to exit the game:")
+    println("Enter '1' to start a new game or 'q' to exit the game:")
     var input: String = ""
     do {
       input = readLine()
