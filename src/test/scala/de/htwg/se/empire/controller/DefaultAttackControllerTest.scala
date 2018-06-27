@@ -4,11 +4,11 @@ import de.htwg.se.empire.controller.impl.DefaultAttackController
 import de.htwg.se.empire.model.grid.Country
 import de.htwg.se.empire.model.player.Player
 import org.junit.runner.RunWith
-import org.scalatest.{Matchers, WordSpec}
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.{Matchers, WordSpec}
 
 @RunWith(classOf[JUnitRunner])
-class AttackControllerTest extends WordSpec with Matchers{
+class DefaultAttackControllerTest extends WordSpec with Matchers {
   val attackingCountry = Country("Attacker", List("Defender"))
   val defendingCountry = Country("Defender", List("Attacker"))
   val attacker = Player("Hans")
