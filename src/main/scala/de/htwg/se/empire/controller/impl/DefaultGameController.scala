@@ -138,8 +138,6 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
     if (playerOnTurn.handholdSoldiers == 0) {
       status = ATTACK
       LOG.info("You have successfully distribute all of your soldiers!\nAttack Phase starts")
-    } else {
-      ""
     }
   }
 
