@@ -3,7 +3,7 @@ package de.htwg.se.empire.controller
 import de.htwg.se.empire.controller.impl.DefaultInitController
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{ Matchers, WordSpec }
 
 @RunWith(classOf[JUnitRunner])
 class DefaultInitControllerTest extends WordSpec with Matchers {

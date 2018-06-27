@@ -1,13 +1,13 @@
 package de.htwg.se.empire.controller.impl
 
-import com.google.inject.{Guice, Inject, Injector}
+import com.google.inject.{ Guice, Inject, Injector }
 import de.htwg.se.empire.EmpireModule
-import de.htwg.se.empire.controller.{AttackController, GameController, InitController, ReinforcementController}
+import de.htwg.se.empire.controller.{ AttackController, GameController, InitController, ReinforcementController }
 import de.htwg.se.empire.model.Grid
 import de.htwg.se.empire.model.grid.Country
 import de.htwg.se.empire.model.player.Player
-import de.htwg.se.empire.util.Phase.{Phase, _}
-import org.apache.logging.log4j.{LogManager, Logger}
+import de.htwg.se.empire.util.Phase.{ Phase, _ }
+import org.apache.logging.log4j.{ LogManager, Logger }
 
 case class DefaultGameController @Inject() (var playingField: Grid) extends GameController {
 

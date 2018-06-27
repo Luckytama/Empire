@@ -5,7 +5,7 @@ import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.util.Phase._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{ Matchers, WordSpec }
 
 @RunWith(classOf[JUnitRunner])
 class DefaultGameControllerTest extends WordSpec with Matchers {

@@ -5,7 +5,7 @@ import de.htwg.se.empire.model.grid.Country
 import de.htwg.se.empire.model.player.Player
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{ Matchers, WordSpec }
 
 @RunWith(classOf[JUnitRunner])
 class DefaultAttackControllerTest extends WordSpec with Matchers {

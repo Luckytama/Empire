@@ -3,10 +3,11 @@ package de.htwg.se.empire
 import de.htwg.se.empire.controller.impl.{ DefaultGameController, DefaultInitController }
 import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.view.TUI
-
 import com.google.inject.{ Guice, Injector }
 import de.htwg.se.empire.model.Grid
 import de.htwg.se.empire.parser.Parser
+import de.htwg.se.empire.view.gui.SwingGui
+
 import scala.io.StdIn.readLine
 
 object Empire {
@@ -19,6 +20,7 @@ object Empire {
     val tui = new TUI()
     var playingField: PlayingField = null
     val gameController = DefaultGameController(playingField)
+    val gui = new SwingGui(gameController)
 
     println("Press '1' to start a new game or 'q' to exit the game:")
     var input: String = ""
