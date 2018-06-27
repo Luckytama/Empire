@@ -15,7 +15,7 @@ case class TUI(gameController: GameController) {
     }
   }
 
-  def processSetupInput(): Unit = {
+  private def processSetupInput(): Unit = {
     println("Enter path to Playingfield.json:")
     val path = readLine()
     gameController.setUpPhase(path)
@@ -28,7 +28,7 @@ case class TUI(gameController: GameController) {
     this.processPlayerInput("")
   }
 
-  def processPlayerInput(input: String): Unit = {
+  private def processPlayerInput(input: String): Unit = {
     input match {
       case "r" =>
         println("Enter country to reinforce: ")
