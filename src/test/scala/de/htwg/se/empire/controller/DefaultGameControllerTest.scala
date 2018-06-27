@@ -105,7 +105,7 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
         // To be implemented after a view exists
       }
     }
-    "player wants to distribute soldiers in phase REINFORCEMENT" should {
+    /*"player wants to distribute soldiers in phase REINFORCEMENT" should {
       val playingField: PlayingField = null
       val gameController = DefaultGameController(playingField)
       gameController.setUpPhase("playingField/EmpireData.json", "Hans", "Markus")
@@ -131,6 +131,6 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
           // inform view
         }
       }
-    }
+    }*/
   }
 }
