@@ -22,6 +22,8 @@ libraryDependencies += "org.json4s" %% "json4s-jackson" % "3.3.0"
 libraryDependencies += "net.codingwell" %% "scala-guice" % "4.2.1"
 libraryDependencies += "org.scala-lang" % "scala-swing" % "2.11+"
 
+coverageExcludedPackages := "de\\.htwg\\.se\\.empire\\.view.*;de\\.htwg\\.se\\.empire\\.Empire.*"
+
 fork in run := true
 
 

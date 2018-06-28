@@ -1,9 +1,12 @@
 package de.htwg.se.empire.controller
 
 import de.htwg.se.empire.controller.impl.DefaultGameController
-import de.htwg.se.empire.model.grid.PlayingField
+import de.htwg.se.empire.model.grid.{ Continent, Country, PlayingField }
+import de.htwg.se.empire.model.player.Player
+import de.htwg.se.empire.util.Phase
 import de.htwg.se.empire.util.Phase._
 import org.junit.runner.RunWith
+import org.scalamock.scalatest.MockFactory
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -12,7 +15,7 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
 
   "The Game Controller" when {
     "new" should {
-      val playingField = new PlayingField(null)
+      val playingField = PlayingField(null)
       val gameController = DefaultGameController(playingField)
       "have a empty Playing Field" in {
         gameController.playingField should be(playingField)
@@ -105,31 +108,97 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
         // To be implemented after a view exists
       }
     }
-    "player wants to distribute soldiers in phase REINFORCEMENT" should {
-      val playingField: PlayingField = null
-      val gameController = DefaultGameController(playingField)
-      gameController.setUpPhase("playingField/EmpireData.json", "Hans", "Markus")
-      gameController.changeToGamePhase()
-      gameController.changeToReinforcementPhase()
-      val country = gameController.playingField.getPlayer("Hans").get.countries.head.name
-      val amountOfSoldiersBefore = gameController.playingField.getCountry(country).get.soldiers
-      val handholdSoldiers = gameController.playerOnTurn.handholdSoldiers
-      gameController.distributeSoldiers(3, country)
-      "have now more soldiers on a country" in {
-        amountOfSoldiersBefore + 3 should be(gameController.playingField.getCountry(country).get.soldiers)
+    "a Player wants to distribute soldiers in another game phase" should {
+      val gameController = new DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("Country", null))))))
+      gameController.status = Phase.IDLE
+      gameController.distributeSoldiers(5, "Country")
+      "not change the amout of soldiers on a country" in {
+        gameController.playingField.getCountry("Country").get.soldiers should be(0)
       }
-      "are always in same phase" in {
-        gameController.status should be(REINFORCEMENT)
+    }
+    "a Player wants to distribute less soldiers that he have" should {
+      val gameController = new DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("Country", null))))))
+      gameController.status = Phase.REINFORCEMENT
+      val player = Player("Hans")
+      gameController.playerOnTurn = player
+      gameController.distributeSoldiers(5, "Country")
+      "not infect the amount of soldiers on an country" in {
+        gameController.playingField.getCountry("Country").get.soldiers should be(0)
       }
-      "change to attack phase when handhold soldiers are empty" in {
-        gameController.distributeSoldiers(gameController.playerOnTurn.handholdSoldiers, country)
-        gameController.status should be(ATTACK)
+      "not infect the amount of handhold soldiers" in {
+        gameController.playerOnTurn.handholdSoldiers should be(0)
       }
-      "Not enough handhold soldiers" should {
-        "inform the View that the player have not enough handhold soldiers" in {
-          gameController.distributeSoldiers(3, country)
-          // inform view
-        }
+    }
+    "a Player wants to distribute soldiers" should {
+      val gameController = DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("Country", null))))))
+      gameController.status = Phase.REINFORCEMENT
+      val player = Player("Hans")
+      gameController.playerOnTurn = player
+      player.handholdSoldiers = 5
+      gameController.distributeSoldiers(5, "Country")
+      "have less soldiers on hand" in {
+        player.handholdSoldiers should be(0)
+      }
+      "infect the amount of soldiers on the country" in {
+        gameController.playingField.getCountry("Country").get.soldiers should be(5)
+      }
+      "change to Attack Phase after all soldiers are distributed" in {
+        gameController.status should be(Phase.ATTACK)
+      }
+    }
+    "a Player wants to attack another country with an invalid attack" should {
+      val gameController = DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("src", List("target")), Country("target", List("src")), Country("x", List("y")))))))
+      val player = Player("Hans")
+      player.handholdSoldiers = 5
+      gameController.playerOnTurn = player
+      "not perform the attack with invalid countrie names" in {
+        gameController.attackCountry("x", "y", 0)
+      }
+      "not perform the attack when countries are not connected" in {
+        gameController.attackCountry("src", "x", 0)
+      }
+      "not perform the attack when performed with more soldiers than handhold" in {
+        gameController.attackCountry("src", "target", 5)
+      }
+      "not perform the attack when target country is owned by attacker" in {
+        player.addCountry(gameController.playingField.getCountry("target").get)
+        gameController.attackCountry("src", "target", 2)
+      }
+    }
+    "a Player wants to attack another country with a valid attack" should {
+      val gameController = DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("src", List("target")), Country("target", List("src")), Country("x", List("y")))))))
+      val player = Player("Hans")
+      player.handholdSoldiers = 5
+      player.addCountry(gameController.playingField.getCountry("src").get)
+      gameController.playingField.getCountry("src").get.soldiers = 10
+      gameController.playingField.getCountry("target").get.soldiers = 10
+      gameController.playerOnTurn = player
+      "no Exception is thrown" in {
+        gameController.attackCountry("src", "target", 2)
+      }
+    }
+    "a Player wants to end his round after defeated the other player" should {
+      val gameController = DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("src", null))))))
+      gameController.playingField.players.append(Player("Hans"), Player("Markus"))
+      gameController.playingField.getPlayer("Hans").get.addCountry(gameController.playingField.getCountry("src").get)
+      gameController.playerOnTurn = gameController.playingField.getPlayer("Hans").get
+      gameController.completeRound()
+      "the game status should be FINISH" in {
+        gameController.status should be(Phase.FINISH)
+      }
+    }
+    "a Player wants to end his round" should {
+      val gameController = DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("src", null), Country("target", null))))))
+      gameController.playingField.players.append(Player("Hans"), Player("Markus"))
+      gameController.playingField.getPlayer("Hans").get.addCountry(gameController.playingField.getCountry("src").get)
+      gameController.playingField.getPlayer("Markus").get.addCountry(gameController.playingField.getCountry("target").get)
+      gameController.playerOnTurn = gameController.playingField.getPlayer("Hans").get
+      gameController.completeRound()
+      "the game status should be REINFORCEMENT" in {
+        gameController.status should be(Phase.REINFORCEMENT)
+      }
+      "the next player should be on turn" in {
+        gameController.playerOnTurn should be(gameController.playingField.getPlayer("Markus").get)
       }
     }
   }

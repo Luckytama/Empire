@@ -26,6 +26,11 @@ class DefaultAttackControllerTest extends WordSpec with Matchers {
         if (attackingCountry.soldiers == 2) defendingCountry.soldiers should be(0) else attackingCountry.soldiers should be(1)
       }
     }
+    "Somebody performs an illegal attack" should {
+      "throw an Exception" in {
+        assertThrows[IllegalArgumentException](attackController.attackCountry(attackingCountry, defendingCountry, 0))
+      }
+    }
     "Somebody wants to move soldiers from one to another country" should {
       val country1 = Country("Test1", List("Test2"))
       val country2 = Country("Test2", List("Test1"))

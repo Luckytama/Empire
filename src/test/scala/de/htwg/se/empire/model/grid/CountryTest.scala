@@ -22,16 +22,26 @@ class CountryTest extends WordSpec with Matchers {
         country.toString should be("Country")
       }
     }
-    "set with soldiers" should {
+    "add soldiers" should {
       "have soldiers" in {
         country.addSoldiers(5)
         country.soldiers should be(5)
+      }
+    }
+    "add invalid amount of soldiers" should {
+      "throw an Exception" in {
+        assertThrows[IllegalArgumentException](country.addSoldiers(-1))
       }
     }
     "remove soldiers" should {
       "have 0 soldiers" in {
         country.removeSoldiers(7)
         country.soldiers should be(0)
+      }
+    }
+    "remove an invalid amount of soldiers" should {
+      "throw an Exception" in {
+        assertThrows[IllegalArgumentException](country.addSoldiers(-1))
       }
     }
   }
