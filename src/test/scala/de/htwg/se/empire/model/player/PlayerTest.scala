@@ -43,9 +43,32 @@ class PlayerTest extends WordSpec with Matchers {
         player.countries should be(ListBuffer(Country("Another Country", null)))
       }
     }
+    "a unkown country is removerd" should {
+      "log an error" in {
+        player.removeCountry(Country("x", null))
+      }
+    }
     "the country amount is requested" should {
       "be 1 country" in {
         player.getCountryAmount should be(1)
+      }
+    }
+    "add handhold soldiers" should {
+      "have more handhold soldiers" in {
+        player.addHandholdSoldiers(5)
+        player.handholdSoldiers should be(5)
+      }
+    }
+    "put a valid amount of soldiers" should {
+      "have less handhold soldiers" in {
+        player.putSoldiers(5)
+        player.handholdSoldiers should be(0)
+      }
+    }
+    "put an invalid amount of soldiers" should {
+      "have the same amount of soldiers on hand" in {
+        player.putSoldiers(5)
+        player.handholdSoldiers should be(0)
       }
     }
   }
