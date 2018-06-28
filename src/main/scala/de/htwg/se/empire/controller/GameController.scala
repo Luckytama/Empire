@@ -3,7 +3,9 @@ package de.htwg.se.empire.controller
 import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.util.Phase.Phase
 
-trait GameController {
+import scala.swing.Publisher
+
+trait GameController extends Publisher {
 
   def status: Phase
 

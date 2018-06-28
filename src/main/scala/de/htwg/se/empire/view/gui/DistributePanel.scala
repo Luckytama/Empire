@@ -2,7 +2,7 @@ package de.htwg.se.empire.view.gui
 
 import de.htwg.se.empire.controller.GameController
 import de.htwg.se.empire.util.Phase
-import javax.swing.border.{EtchedBorder, TitledBorder}
+import javax.swing.border.{ EtchedBorder, TitledBorder }
 
 import scala.collection.mutable.ListBuffer
 import scala.swing._
