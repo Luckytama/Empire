@@ -85,6 +85,7 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
         ownerTargetCountry.countries.remove(ownerTargetCountry.countries.indexOf(playingField.getCountry(targetCountry).get))
         playerOnTurn.addCountry(playingField.getCountry(targetCountry).get)
         status = MOVING
+        moveSoldiers(playingField.getCountry(srcCountry).get, playingField.getCountry(targetCountry).get, playingField.getCountry(srcCountry).get.soldiers / 2)
       } else {
         println("Defender has defended his country")
       }
@@ -144,7 +145,7 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
     }
   }
 
-  def moveSoldiers(src: Country, target: Country, numberOfSoldiers: Int): Unit = {
+  private def moveSoldiers(src: Country, target: Country, numberOfSoldiers: Int): Unit = {
     if (src.soldiers - numberOfSoldiers >= 1 && playerOnTurn.countries.contains(src) && playerOnTurn.countries.contains(target)) {
       src.soldiers -= numberOfSoldiers
       target.soldiers += numberOfSoldiers
