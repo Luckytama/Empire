@@ -1,12 +1,13 @@
 package de.htwg.se.empire.view.gui
 
 import de.htwg.se.empire.controller.GameController
-import javax.swing.border.{ EtchedBorder, TitledBorder }
+import de.htwg.se.empire.util.Phase
+import javax.swing.border.{EtchedBorder, TitledBorder}
 
+import scala.collection.mutable.ListBuffer
 import scala.swing._
 
 class DistributePanel(gameController: GameController) extends FlowPanel {
-  enabled = false
 
   val soldiersToDistribute = new Label("N/A")
 
@@ -15,11 +16,15 @@ class DistributePanel(gameController: GameController) extends FlowPanel {
 
   val distributeButton = new Button("Distribute Soldiers")
 
-  val countriesCombo = new ComboBox("")
+  var countriesCombo = new ComboBox[String](List.empty[String])
 
   val distributeInfoPanel = new GridPanel(1, 2) {
     contents += new Label("Soldiers to Distribute: ")
     contents += soldiersToDistribute
+  }
+
+  val comboPanel = new FlowPanel {
+    contents += countriesCombo
   }
 
   val distributeSoldierPanel = new GridPanel(3, 1) {
@@ -27,7 +32,7 @@ class DistributePanel(gameController: GameController) extends FlowPanel {
     hGap = 5
     border = new TitledBorder(new EtchedBorder(), "Distribute Soldiers")
     contents += new Label("Choose country:")
-    contents += countriesCombo
+    contents += comboPanel
     contents += new Label("Enter how many soldiers to disribute:")
     contents += soldiersAmount
     contents += distributeButton
@@ -54,4 +59,21 @@ class DistributePanel(gameController: GameController) extends FlowPanel {
     distributeButton.enabled = false
   }
 
+  def refresh(): Unit = {
+    if (gameController.getCurrentPhase == Phase.REINFORCEMENT) {
+      this.enable()
+      soldiersToDistribute.text = gameController.playerOnTurn.handholdSoldiers.toString
+      val countries = new ListBuffer[String]
+      gameController.playerOnTurn.countries.toList.foreach(c => {
+        countries.append(c.name)
+      })
+      this.comboPanel.contents.clear()
+      countriesCombo = new ComboBox[String](countries)
+      this.comboPanel.contents += countriesCombo
+      this.revalidate()
+      this.repaint()
+    } else {
+      this.disable()
+    }
+  }
 }

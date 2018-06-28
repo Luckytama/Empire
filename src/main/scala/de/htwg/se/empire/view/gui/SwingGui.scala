@@ -1,9 +1,11 @@
 package de.htwg.se.empire.view.gui
 
 import de.htwg.se.empire.controller.GameController
+import de.htwg.se.empire.util.Phase
+import javax.swing.{JFrame, JOptionPane}
 
 import scala.swing._
-import scala.swing.event.{ ButtonClicked, Key }
+import scala.swing.event.{ButtonClicked, Key}
 
 class SwingGui(gameController: GameController) extends Frame {
   title = "HTWG Empire"
@@ -27,7 +29,6 @@ class SwingGui(gameController: GameController) extends Frame {
     }
   }
 
-  //size = new Dimension(1000, 1000)
   contents = new BorderPanel {
     add(setupPanel, BorderPanel.Position.North)
     add(attackPanel, BorderPanel.Position.West)
@@ -36,6 +37,9 @@ class SwingGui(gameController: GameController) extends Frame {
   }
 
   listenTo(setupPanel.startGameButton)
+  listenTo(distributePanel.distributeButton)
+  listenTo(gameInfoPanel.endTurnButton)
+  listenTo(attackPanel.attackButton)
 
   reactions += {
     case ButtonClicked(setupPanel.startGameButton) => {
@@ -46,9 +50,34 @@ class SwingGui(gameController: GameController) extends Frame {
       gameInfoPanel.visible = true
       attackPanel.disable()
       gameInfoPanel.refresh()
+      distributePanel.refresh()
       size = new Dimension(1200, 400)
       this.repaint()
     }
+    case ButtonClicked(distributePanel.distributeButton) => {
+      gameController.distributeSoldiers(distributePanel.soldiersAmount.text.toInt, distributePanel.countriesCombo.selection.item)
+      distributePanel.refresh()
+      attackPanel.refresh()
+      gameInfoPanel.refresh()
+    }
+    case ButtonClicked(gameInfoPanel.endTurnButton) => {
+      gameController.completeRound()
+      attackPanel.refresh()
+      distributePanel.refresh()
+      gameInfoPanel.refresh()
+    }
+    case ButtonClicked(attackPanel.attackButton) => {
+      gameController.attackCountry(attackPanel.sourceCountry.selection.item, attackPanel.destCountry.selection.item, attackPanel.soldiersAmount.text.toInt)
+      gameInfoPanel.refresh()
+      attackPanel.refresh()
+      if (gameController.getCurrentPhase == Phase.FINISH) {
+        distributePanel.disable()
+        attackPanel.disable()
+        gameInfoPanel.disable()
+        JOptionPane.showMessageDialog(new JFrame(), "Player " + gameController.playerOnTurn.name + " won!", "Success", JOptionPane.INFORMATION_MESSAGE)
+      }
+    }
+
   }
 
 }
