@@ -6,6 +6,7 @@ import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.util.Phase
 import de.htwg.se.empire.util.Phase._
 import org.junit.runner.RunWith
+import org.scalamock.scalatest.MockFactory
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{ Matchers, WordSpec }
 
@@ -14,7 +15,7 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
 
   "The Game Controller" when {
     "new" should {
-      val playingField = new PlayingField(null)
+      val playingField = PlayingField(null)
       val gameController = DefaultGameController(playingField)
       "have a empty Playing Field" in {
         gameController.playingField should be(playingField)
@@ -164,15 +165,40 @@ class DefaultGameControllerTest extends WordSpec with Matchers {
         gameController.attackCountry("src", "target", 2)
       }
     }
-    "a Player wants to attack another country wiht a valid attack" should {
+    "a Player wants to attack another country with a valid attack" should {
       val gameController = DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("src", List("target")), Country("target", List("src")), Country("x", List("y")))))))
       val player = Player("Hans")
       player.handholdSoldiers = 5
       player.addCountry(gameController.playingField.getCountry("src").get)
       gameController.playingField.getCountry("src").get.soldiers = 10
+      gameController.playingField.getCountry("target").get.soldiers = 10
       gameController.playerOnTurn = player
-      "blabla" in {
+      "no Exception is thrown" in {
         gameController.attackCountry("src", "target", 2)
+      }
+    }
+    "a Player wants to end his round after defeated the other player" should {
+      val gameController = DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("src", null))))))
+      gameController.playingField.players.append(Player("Hans"), Player("Markus"))
+      gameController.playingField.getPlayer("Hans").get.addCountry(gameController.playingField.getCountry("src").get)
+      gameController.playerOnTurn = gameController.playingField.getPlayer("Hans").get
+      gameController.completeRound()
+      "the game status should be FINISH" in {
+        gameController.status should be(Phase.FINISH)
+      }
+    }
+    "a Player wants to end his round" should {
+      val gameController = DefaultGameController(PlayingField(List(Continent("Continent", 5, List(Country("src", null), Country("target", null))))))
+      gameController.playingField.players.append(Player("Hans"), Player("Markus"))
+      gameController.playingField.getPlayer("Hans").get.addCountry(gameController.playingField.getCountry("src").get)
+      gameController.playingField.getPlayer("Markus").get.addCountry(gameController.playingField.getCountry("target").get)
+      gameController.playerOnTurn = gameController.playingField.getPlayer("Hans").get
+      gameController.completeRound()
+      "the game status should be REINFORCEMENT" in {
+        gameController.status should be(Phase.REINFORCEMENT)
+      }
+      "the next player should be on turn" in {
+        gameController.playerOnTurn should be(gameController.playingField.getPlayer("Markus").get)
       }
     }
   }

@@ -43,6 +43,7 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
     if (checkIfPlayingFieldIsValid()) {
       initController.randDistributeCountries(playingField)
       initController.randDistributeSoldiers(playingField)
+      playerOnTurn = playingField.players.head
       status = REINFORCEMENT
       changeToReinforcementPhase()
       println("Game starts")
@@ -53,7 +54,6 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
 
   override def changeToReinforcementPhase(): Unit = {
     if (status == REINFORCEMENT) {
-      playerOnTurn = playingField.players.head
       playerOnTurn.handholdSoldiers = reinforcementController.calcSoldiersToDistribute(playingField, playerOnTurn)
       println(playerOnTurn.name + " is on turn!\nYou have " + playerOnTurn.handholdSoldiers + " soldiers to distribute")
     } else {
@@ -94,10 +94,14 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
   }
 
   override def completeRound(): Unit = {
-    playerOnTurn = getNextPlayer
-    status = REINFORCEMENT
-    isPlayerDefeated
-    changeToReinforcementPhase()
+    val defeatedPlayerOpt = isPlayerDefeated
+    if (defeatedPlayerOpt.isDefined) {
+      println(defeatedPlayerOpt.get.name + " is defeated")
+    } else {
+      playerOnTurn = getNextPlayer
+      status = REINFORCEMENT
+      changeToReinforcementPhase()
+    }
   }
 
   override def getCurrentPhase: Phase = status
@@ -112,11 +116,10 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
     playingField.players.foreach(p => if (p.countries.isEmpty) {
       playingField.players.remove(playingField.players.indexOf(p))
       defeatedPlayer = Some(p)
-      println(p.name + " is defeated")
     })
     if (playingField.players.length == 1) {
       println(playingField.players.head + " won the game!!!!")
-      status = IDLE
+      status = FINISH
     }
     defeatedPlayer
   }
