@@ -9,6 +9,7 @@ bin/
 # Intellij
 .idea/
 target/
+.idea_modules/
 
 # Maven
 log/
@@ -41,6 +42,8 @@ project/.sbtserver
 
 # Sonar
 .sonar/
+.scannerwork/
 
 # Application
 yourgame.log
+RUNNING_PID

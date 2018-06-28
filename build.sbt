@@ -1,4 +1,4 @@
-name          := """htwg-scala-seed"""
+name          := """htwg-scala-empire"""
 organization  := "de.htwg.se"
 version       := "0.0.1"
 scalaVersion  := "2.11.8"
@@ -16,6 +16,19 @@ libraryDependencies ++= {
 }
 
 libraryDependencies += "junit" % "junit" % "4.8" % "test"
+libraryDependencies += "org.apache.logging.log4j" % "log4j-api" % "2.11.0"
+libraryDependencies += "org.apache.logging.log4j" % "log4j-core" % "2.11.0"
+libraryDependencies += "org.json4s" %% "json4s-jackson" % "3.3.0"
+libraryDependencies += "net.codingwell" %% "scala-guice" % "4.2.1"
+libraryDependencies += "org.scala-lang" % "scala-swing" % "2.11+"
 
+coverageExcludedPackages := "de\\.htwg\\.se\\.empire\\.view.*;de\\.htwg\\.se\\.empire\\.Empire.*;de\\.htwg\\.se\\.empire\\.controller\\.impl\\.Events.*"
+
+fork in run := true
+
+
+fork in run := true
+
+fork in run := true
 
 fork in run := true
