@@ -1,11 +1,15 @@
 package de.htwg.se.empire.view
 
 import de.htwg.se.empire.controller.GameController
+import de.htwg.se.empire.controller.impl.PhaseChanged
 import de.htwg.se.empire.util.Phase
 
 import scala.io.StdIn.readLine
+import scala.swing.Reactor
 
-case class TUI(gameController: GameController) {
+case class TUI(gameController: GameController) extends Reactor {
+
+  listenTo(gameController)
 
   def processInput(input: String): Unit = {
     if (gameController.getCurrentPhase == Phase.IDLE) {
@@ -51,6 +55,10 @@ case class TUI(gameController: GameController) {
       case _ =>
         println("Enter 'r' to reinforce, 'a' to attack country, 'p' for player info or 'c' to complete your round.")
     }
+  }
+
+  reactions += {
+    case event: PhaseChanged => processPlayerInput("")
   }
 
 }

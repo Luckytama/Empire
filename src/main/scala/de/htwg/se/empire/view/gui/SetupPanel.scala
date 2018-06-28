@@ -1,12 +1,12 @@
 package de.htwg.se.empire.view.gui
 
 import de.htwg.se.empire.controller.GameController
-import javax.swing.{JFileChooser, JFrame, JOptionPane}
+import javax.swing.{ JFileChooser, JFrame, JOptionPane }
 import javax.swing.filechooser.FileNameExtensionFilter
 
 import scala.swing._
 
-import javax.swing.border.{EtchedBorder, TitledBorder}
+import javax.swing.border.{ EtchedBorder, TitledBorder }
 
 import scala.swing.event.ButtonClicked
 

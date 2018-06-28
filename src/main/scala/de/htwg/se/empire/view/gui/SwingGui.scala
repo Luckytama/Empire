@@ -1,6 +1,7 @@
 package de.htwg.se.empire.view.gui
 
 import de.htwg.se.empire.controller.GameController
+import de.htwg.se.empire.controller.impl.PhaseChanged
 import de.htwg.se.empire.util.Phase
 import javax.swing.{JFrame, JOptionPane}
 
@@ -40,6 +41,7 @@ class SwingGui(gameController: GameController) extends Frame {
   listenTo(distributePanel.distributeButton)
   listenTo(gameInfoPanel.endTurnButton)
   listenTo(attackPanel.attackButton)
+  listenTo(gameController)
 
   reactions += {
     case ButtonClicked(setupPanel.startGameButton) => {
@@ -77,7 +79,11 @@ class SwingGui(gameController: GameController) extends Frame {
         JOptionPane.showMessageDialog(new JFrame(), "Player " + gameController.playerOnTurn.name + " won!", "Success", JOptionPane.INFORMATION_MESSAGE)
       }
     }
-
+    case event: PhaseChanged => {
+      gameInfoPanel.refresh()
+      attackPanel.refresh()
+      distributePanel.refresh()
+    }
   }
 
 }
