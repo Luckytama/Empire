@@ -44,6 +44,7 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
       initController.randDistributeCountries(playingField)
       initController.randDistributeSoldiers(playingField)
       status = REINFORCEMENT
+      changeToReinforcementPhase()
       println("Game starts")
     } else {
       println("The playing field is not setup correct.")

@@ -5,57 +5,52 @@ import de.htwg.se.empire.util.Phase
 
 import scala.io.StdIn.readLine
 
-class TUI {
+case class TUI(gameController: GameController) {
 
-  def processInput(input: String, gameController: GameController): Unit = {
+  def processInput(input: String): Unit = {
     if (gameController.getCurrentPhase == Phase.IDLE) {
-      this.processSetupInput(gameController)
+      this.processSetupInput()
     } else {
-      this.processPlayerInput(input, gameController)
+      this.processPlayerInput(input)
     }
   }
 
-  def processSetupInput(gameController: GameController): Unit = {
-    var path: String = ""
-    var players: String = ""
+  private def processSetupInput(): Unit = {
     println("Enter path to Playingfield.json:")
-    path = readLine()
+    val path = readLine()
     gameController.setUpPhase(path)
     println("Enter Players (Comma seperated):")
-    players = readLine()
+    val players = readLine()
     players.trim().split(",").foreach(p => {
       gameController.addPlayer(p)
     })
     gameController.changeToGamePhase()
+    this.processPlayerInput("")
   }
 
-  def processPlayerInput(input: String, gameController: GameController): Unit = {
-    while (gameController.getCurrentPhase == Phase.REINFORCEMENT) {
-      var country: String = ""
-      var soldiers: Int = 0
-
-      println("Enter country to reinforce: ")
-      country = readLine()
-      println("Enter amount of soldiers: ")
-      soldiers = readLine().toInt
-      gameController.distributeSoldiers(soldiers, country)
-    }
+  private def processPlayerInput(input: String): Unit = {
     input match {
-      case "a" =>
-        var srcCountry: String = ""
-        var targetCountry: String = ""
-        var soldiers: Int = 0
-        println("Enter from which country to attack: ")
-        srcCountry = readLine()
-        println("Enter which country to attack: ")
-        targetCountry = readLine()
+      case "r" =>
+        println("Enter country to reinforce: ")
+        val country = readLine()
         println("Enter amount of soldiers: ")
-        soldiers = readLine().toInt
+        val soldiers = readLine().toInt
+        gameController.distributeSoldiers(soldiers, country)
+      case "a" =>
+        println("Enter from which country to attack: ")
+        val srcCountry = readLine()
+        println("Enter which country to attack: ")
+        val targetCountry = readLine()
+        println("Enter amount of soldiers: ")
+        val soldiers = readLine().toInt
         gameController.attackCountry(srcCountry, targetCountry, soldiers)
+      case "p" =>
+        println(gameController.playerOnTurn.toString)
       case "c" =>
         gameController.completeRound()
+      case _ =>
+        println("Enter 'r' to reinforce, 'a' to attack country, 'p' for player info or 'c' to complete your round.")
     }
-
   }
 
 }
