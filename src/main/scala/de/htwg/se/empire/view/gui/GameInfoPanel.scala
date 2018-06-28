@@ -11,17 +11,12 @@ class GameInfoPanel(gameController: GameController) extends FlowPanel {
 
   val currentPlayer = new Label("N/A")
   val endTurnButton = new Button("End turn")
-  val startGameButton = new Button("Start Game")
 
   val gameInfoPanel = new GridPanel(2, 2) {
     border = new TitledBorder(new EtchedBorder(), "Game Info")
     contents += new Label("Current player: ")
     contents += currentPlayer
-    if (gameController.getCurrentPhase != Phase.IDLE) {
-      contents += endTurnButton
-    } else {
-      contents += startGameButton
-    }
+    contents += endTurnButton
   }
 
   def disable(): Unit = {
@@ -32,6 +27,13 @@ class GameInfoPanel(gameController: GameController) extends FlowPanel {
     endTurnButton.enabled = true
   }
 
-  contents += gameInfoPanel
+  def refresh(): Unit = {
+    if (gameController.getCurrentPhase != Phase.IDLE && gameController.getCurrentPhase != Phase.SETUP) {
+      currentPlayer.text = gameController.playerOnTurn.name
+    }
+    this.revalidate()
+    this.repaint()
+  }
 
+  contents += gameInfoPanel
 }

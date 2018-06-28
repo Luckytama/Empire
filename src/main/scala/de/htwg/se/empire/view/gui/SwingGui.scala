@@ -14,16 +14,9 @@ class SwingGui(gameController: GameController) extends Frame {
   val attackPanel = new AttackPanel(gameController)
   val distributePanel = new DistributePanel(gameController)
 
-  distributePanel.disable()
-  attackPanel.disable()
-
-  //size = new Dimension(1000, 1000)
-  contents = new BorderPanel {
-    add(gameInfoPanel, BorderPanel.Position.Center)
-    add(setupPanel, BorderPanel.Position.North)
-    add(attackPanel, BorderPanel.Position.West)
-    add(distributePanel, BorderPanel.Position.East)
-  }
+  distributePanel.visible = false
+  attackPanel.visible = false
+  gameInfoPanel.visible = false
 
   menuBar = new MenuBar {
     contents += new Menu("File") {
@@ -34,13 +27,27 @@ class SwingGui(gameController: GameController) extends Frame {
     }
   }
 
-  listenTo(gameInfoPanel.startGameButton)
+  //size = new Dimension(1000, 1000)
+  contents = new BorderPanel {
+    add(setupPanel, BorderPanel.Position.North)
+    add(attackPanel, BorderPanel.Position.West)
+    add(gameInfoPanel, BorderPanel.Position.Center)
+    add(distributePanel, BorderPanel.Position.East)
+  }
+
+  listenTo(setupPanel.startGameButton)
 
   reactions += {
-    case ButtonClicked(gameInfoPanel.startGameButton) => {
-      setupPanel.disable()
-      distributePanel.enable()
-      attackPanel.enable()
+    case ButtonClicked(setupPanel.startGameButton) => {
+      gameController.changeToGamePhase()
+      setupPanel.visible = false
+      distributePanel.visible = true
+      attackPanel.visible = true
+      gameInfoPanel.visible = true
+      attackPanel.disable()
+      gameInfoPanel.refresh()
+      size = new Dimension(1200, 400)
+      this.repaint()
     }
   }
 

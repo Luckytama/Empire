@@ -19,10 +19,12 @@ class SetupPanel(gameController: GameController) extends FlowPanel {
   val playerInput = new TextField()
   val addPlayerButton = new Button("Add Player")
 
+  val startGameButton = new Button("Start Game")
+
   listenTo(addPlayerButton)
   listenTo(chooseFileButton)
 
-  val setupPanel = new GridPanel(2, 2) {
+  val setupPanel = new GridPanel(3, 2) {
     vGap = 10
     hGap = 5
     border = new TitledBorder(new EtchedBorder(), "Setup")
@@ -30,6 +32,7 @@ class SetupPanel(gameController: GameController) extends FlowPanel {
     contents += chooseFileButton
     contents += playerInput
     contents += addPlayerButton
+    contents += startGameButton
   }
 
   contents += setupPanel
