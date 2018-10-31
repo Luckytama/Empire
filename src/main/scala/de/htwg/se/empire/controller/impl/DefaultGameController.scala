@@ -45,7 +45,6 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
       initController.randDistributeSoldiers(playingField)
       playerOnTurn = playingField.players.head
       status = REINFORCEMENT
-      publish(new PhaseChanged)
       changeToReinforcementPhase()
       println("Game starts")
     } else {
@@ -102,7 +101,6 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
     } else {
       playerOnTurn = getNextPlayer
       status = REINFORCEMENT
-      publish(new PhaseChanged)
       changeToReinforcementPhase()
     }
   }
@@ -133,7 +131,7 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
     if ((src.isDefined && target.isDefined)
       && src.get.adjacentCountries.contains(target.get.name)
       && (src.get.soldiers > soldiers) && (playerOnTurn.countries.contains(src.get)
-        && !playerOnTurn.countries.contains(target.get))) {
+      && !playerOnTurn.countries.contains(target.get))) {
       true
     } else {
       false
@@ -143,7 +141,6 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
   private def changeToAttackPhase(): Unit = {
     if (playerOnTurn.handholdSoldiers == 0) {
       status = ATTACK
-      publish(new PhaseChanged)
       LOG.info("You have successfully distribute all of your soldiers!\nAttack Phase starts")
     }
   }
@@ -152,12 +149,12 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
     if (src.soldiers - numberOfSoldiers >= 1 && playerOnTurn.countries.contains(src) && playerOnTurn.countries.contains(target)) {
       src.soldiers -= numberOfSoldiers
       target.soldiers += numberOfSoldiers
-      status = ATTACK
-      publish(new PhaseChanged)
-    } else {
-      LOG.info("Illegal move!")
+      status = ATTACK}
+      else
+      {
+        LOG.info("Illegal move!")
+      }
     }
-  }
 
   private def checkIfPlayingFieldIsValid(): Boolean = if (playingField.getAllCountries.nonEmpty && playingField.players.length >= 2) true else false
 }

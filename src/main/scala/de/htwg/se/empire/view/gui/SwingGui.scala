@@ -41,7 +41,6 @@ class SwingGui(gameController: GameController) extends Frame {
   listenTo(distributePanel.distributeButton)
   listenTo(gameInfoPanel.endTurnButton)
   listenTo(attackPanel.attackButton)
-  listenTo(gameController)
 
   reactions += {
     case ButtonClicked(setupPanel.startGameButton) => {

@@ -9,7 +9,6 @@ import scala.swing.Reactor
 
 case class TUI(gameController: GameController) extends Reactor {
 
-  listenTo(gameController)
 
   def processInput(input: String): Unit = {
     if (gameController.getCurrentPhase == Phase.IDLE) {
