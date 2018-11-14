@@ -3,10 +3,10 @@ package de.htwg.se.empire.view.gui
 import de.htwg.se.empire.controller.GameController
 import de.htwg.se.empire.controller.impl.PhaseChanged
 import de.htwg.se.empire.util.Phase
-import javax.swing.{JFrame, JOptionPane}
+import javax.swing.{ JFrame, JOptionPane }
 
 import scala.swing._
-import scala.swing.event.{ButtonClicked, Key}
+import scala.swing.event.{ ButtonClicked, Key }
 
 class SwingGui(gameController: GameController) extends Frame {
   title = "HTWG Empire"
