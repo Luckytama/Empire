@@ -6,7 +6,6 @@ import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.util.Phase
 import de.htwg.se.empire.util.Phase._
 import org.junit.runner.RunWith
-import org.scalamock.scalatest.MockFactory
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.{ Matchers, WordSpec }
 
