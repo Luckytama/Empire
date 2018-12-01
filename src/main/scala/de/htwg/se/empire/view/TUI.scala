@@ -20,9 +20,9 @@ case class TUI(gameController: GameController) extends Reactor {
   }
 
   private def processSetupInput(): Unit = {
-    println("Enter path to Playingfield.json:")
-    val path = readLine()
-    gameController.setUpPhase(path)
+//    println("Enter path to Playingfield.json:")
+//    val path = readLine()
+    gameController.setUpPhase("/Users/michael/Documents/Web-Technologien/Empire copy/playingfield/EmpireData.json")
     println("Enter Players (Comma seperated):")
     val players = readLine()
     players.trim().split(",").foreach(p => {

@@ -17,8 +17,8 @@ object Empire {
   val gameController: GameController = injector.getInstance(classOf[GameController])
 
   def main(args: Array[String]): Unit = {
-    val tui = new TUI(gameController)
-    val gui = new SwingGui(gameController)
+    val tui = TUI(gameController)
+//    val gui = new SwingGui(gameController)
 
     println("Enter '1' to start a new game or 'q' to exit the game:")
     var input: String = ""

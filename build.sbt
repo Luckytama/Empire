@@ -16,17 +16,12 @@ libraryDependencies ++= Seq(
   "org.apache.logging.log4j" % "log4j-core" % "2.11.0" % Runtime
 )
 libraryDependencies += "org.json4s" %% "json4s-jackson" % "3.5.0.RC1"
-libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
 libraryDependencies += "net.codingwell" %% "scala-guice" % "4.1.0"
+libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
 libraryDependencies += "org.scala-lang.modules" % "scala-swing_2.12" % "2.0.3"
 
 coverageExcludedPackages := "de\\.htwg\\.se\\.empire\\.view.*;de\\.htwg\\.se\\.empire\\.Empire.*;de\\.htwg\\.se\\.empire\\.controller\\.impl\\.Events.*"
 
 fork in run := true
 
-
-fork in run := true
-
-fork in run := true
-
-fork in run := true
+connectInput in run := true
