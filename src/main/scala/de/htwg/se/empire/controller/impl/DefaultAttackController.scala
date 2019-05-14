@@ -12,25 +12,23 @@ class DefaultAttackController extends AttackController {
 
   val DICE_UPPER_CAP = 6
 
-  def attackCountry(src: Country, target: Country, numberOfSoldiers: Int): Unit = {
+  def attackCountry(src: Country, target: Country, numberOfSoldiers: Int): (Country, Country) = {
     val attackerValues = generateAttackingValues(numberOfSoldiers)
     val defenderValues = generateAttackingValues(target.soldiers)
 
     val result = performAttack(attackerValues, defenderValues)
 
-    if (src.soldiers - result._1 > 0) src.removeSoldiers(result._1) else {
+    if (src.soldiers - result._1 > 0) {
+      val srcResult = src.removeSoldiers(result._1).get
+      val targetResult = target.removeSoldiers(result._2).get
+      if (target.soldiers < 0) {
+        LOG.error("Something went wrong while attacking")
+      }
+      (srcResult, targetResult)
+    } else {
       LOG.error("Something went wrong while attacking")
       throw new Exception
     }
-    target.removeSoldiers(result._2)
-    if (target.soldiers < 0) {
-      LOG.error("Something went wrong while attacking")
-    }
-  }
-
-  def moveSoldiers(src: Country, target: Country, numberOfSoldiers: Int): Unit = {
-    src.removeSoldiers(numberOfSoldiers)
-    target.addSoldiers(numberOfSoldiers)
   }
 
   private def generateAttackingValues(numberOfSoldiers: Int): Array[Int] = {
@@ -49,12 +47,7 @@ class DefaultAttackController extends AttackController {
 
   private def rollDice(attackerDice: Int): Array[Int] = {
     val numbers = new Array[Int](attackerDice)
-    for (i <- 0 until attackerDice) {
-      /* nextInt generates a number from 0 to exclusive upper cap,
-      * so the Upper cap is one smaller that zero is excluded with an additional 1
-      */
-      numbers(i) = Random.nextInt(DICE_UPPER_CAP + 1)
-    }
+    for (i <- 0 until attackerDice) yield numbers(i) = Random.nextInt(DICE_UPPER_CAP + 1)
     numbers
   }
 

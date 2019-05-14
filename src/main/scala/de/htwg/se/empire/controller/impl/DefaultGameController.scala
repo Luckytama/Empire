@@ -1,49 +1,46 @@
 package de.htwg.se.empire.controller.impl
 
-import com.google.inject.{ Guice, Inject, Injector }
+import com.google.inject.{Guice, Inject, Injector}
 import de.htwg.se.empire.EmpireModule
-import de.htwg.se.empire.controller.{ AttackController, GameController, InitController, ReinforcementController }
-import de.htwg.se.empire.model.Grid
-import de.htwg.se.empire.model.grid.Country
+import de.htwg.se.empire.controller.{AttackController, GameController, InitController, ReinforcementController}
+import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.model.player.Player
-import de.htwg.se.empire.util.Phase.{ Phase, _ }
-import org.apache.logging.log4j.{ LogManager, Logger }
+import de.htwg.se.empire.parser.Parser
+import de.htwg.se.empire.util.Phase.{Phase, _}
+import org.apache.logging.log4j.{LogManager, Logger}
 
-case class DefaultGameController @Inject() (var playingField: Grid) extends GameController {
+case class DefaultGameController @Inject() (var playingField: PlayingField) extends GameController {
 
-  //TODO: Change println to View.display message
   val injector: Injector = Guice.createInjector(new EmpireModule)
   val attackController: AttackController = injector.getInstance(classOf[AttackController])
   val initController: InitController = injector.getInstance(classOf[InitController])
   val reinforcementController: ReinforcementController = injector.getInstance(classOf[ReinforcementController])
+  val parser: Parser = injector.getInstance(classOf[Parser])
 
-  var status: Phase = IDLE
-  var playerOnTurn: Player = _
+  var status: Phase = SETUP
 
   val LOG: Logger = LogManager.getLogger(this.getClass)
 
   override def setUpPhase(pathToGrid: String, players: String*): Unit = {
     status = SETUP
-    val playingFieldOpt = initController.setUpGrid(pathToGrid, players: _*)
-    if (playingFieldOpt.isDefined) {
-      playingField = playingFieldOpt.get
-    }
+    this.playingField = initController.loadGridFromFile(pathToGrid, players: _*)
   }
 
   override def addPlayer(players: String*): Unit = {
     if (status != SETUP) {
-      println("You can't add new Players at this time of the game")
+      LOG.error("You can't add new Players at this time of the game")
     } else {
-      initController.addPlayers(playingField, players: _*)
-      println("Players are successfully added.")
+      this.playingField = playingField.addPlayers(players: _*)
+      LOG.info("Players are successfully added.")
     }
   }
 
   override def changeToGamePhase(): Unit = {
     if (checkIfPlayingFieldIsValid()) {
-      initController.randDistributeCountries(playingField)
-      initController.randDistributeSoldiers(playingField)
-      playerOnTurn = playingField.players.head
+      this.playingField = initController.randDistributeCountries(this.playingField)
+      this.playingField = initController.randDistributeSoldiers(this.playingField)
+      this.playingField = this.playingField.copy(playerOnTurn = this.playingField.players.head.name)
+      print(this.playingField)
       status = REINFORCEMENT
       publish(new PhaseChanged)
       changeToReinforcementPhase()
@@ -55,43 +52,49 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
 
   override def changeToReinforcementPhase(): Unit = {
     if (status == REINFORCEMENT) {
-      playerOnTurn.handholdSoldiers = reinforcementController.calcSoldiersToDistribute(playingField, playerOnTurn)
-      println(playerOnTurn.name + " is on turn!\nYou have " + playerOnTurn.handholdSoldiers + " soldiers to distribute")
+      this.playingField = playingField.distributeHandholdSoldiers(this.playingField.getPlayerOnTurn.get, reinforcementController.calcSoldiersToDistribute(this.playingField, this.playingField.getPlayerOnTurn.get))
     } else {
       println("You are not in the Reinforcement Phase")
     }
   }
 
-  override def distributeSoldiers(soldiers: Int, countryName: String): Unit = {
+  override def distributeSoldiers(soldiers: Int, countryName: String): Int = {
     if (status == REINFORCEMENT) {
-      if (playerOnTurn.handholdSoldiers - soldiers >= 0) {
-        reinforcementController.distributeSoldiers(playingField, countryName, soldiers)
-        playerOnTurn.handholdSoldiers -= soldiers
-        if (playerOnTurn.handholdSoldiers == 0) {
+      if (this.playingField.getPlayerOnTurn.get.handholdSoldiers - soldiers >= 0) {
+        this.playingField = reinforcementController.distributeSoldiers(this.playingField, countryName, soldiers)
+        this.playingField = this.playingField.updatePlayer(this.playingField.getPlayerOnTurn.get.putSoldiers(soldiers))
+        if (this.playingField.getPlayerOnTurn.get.handholdSoldiers == 0) {
           changeToAttackPhase()
         }
+        soldiers
       } else {
-        println("You don't have that much soldiers to distribute")
+        LOG.info("You don't have that much soldiers to distribute")
+        0
       }
     } else {
-      println("You are not in the Reinforcement Phase")
+      LOG.info("You are not in the Reinforcement Phase")
+      0
     }
   }
 
-  override def attackCountry(srcCountry: String, targetCountry: String, soldiers: Int): Unit = {
-    if (checkIfAttackIsValid(srcCountry, targetCountry, soldiers)) {
-      attackController.attackCountry(playingField.getCountry(srcCountry).get, playingField.getCountry(targetCountry).get, soldiers)
-      if (playingField.getCountry(targetCountry).get.soldiers == 0) {
-        val ownerTargetCountry = playingField.getPlayerForCountry(playingField.getCountry(targetCountry).get).get
-        ownerTargetCountry.countries.remove(ownerTargetCountry.countries.indexOf(playingField.getCountry(targetCountry).get))
-        playerOnTurn.addCountry(playingField.getCountry(targetCountry).get)
-        status = MOVING
-        moveSoldiers(playingField.getCountry(srcCountry).get, playingField.getCountry(targetCountry).get, playingField.getCountry(srcCountry).get.soldiers / 2)
+  override def attackCountry(srcCountryName: String, targetCountryName: String, soldiers: Int): String = {
+    if (checkIfAttackIsValid(srcCountryName, targetCountryName, soldiers)) {
+      val srcCountry = this.playingField.getCountry(srcCountryName).get
+      val targetCountry = this.playingField.getCountry(targetCountryName).get
+      val (src, target) = attackController.attackCountry(srcCountry, playingField.getCountry(targetCountryName).get, soldiers)
+      this.playingField = this.playingField.updateCountry(srcCountry, src)
+      this.playingField = this.playingField.updateCountry(targetCountry, target)
+      if (playingField.getCountry(targetCountryName).get.soldiers == 0) {
+        val ownerTargetCountry = playingField.getPlayerForCountry(playingField.getCountry(targetCountryName).get).get
+        this.playingField = this.playingField.removeCountryFromPlayer(ownerTargetCountry, this.playingField.getCountry(targetCountryName).get)
+        this.playingField = this.playingField.addCountryToPlayer(this.playingField.getPlayerOnTurn.get, this.playingField.getCountry(targetCountryName).get)
+        this.playingField = this.playingField.moveSoldiers(playingField.getCountry(srcCountryName).get, playingField.getCountry(targetCountryName).get, playingField.getCountry(srcCountryName).get.soldiers / 2)
+        "You win the battle and gain the country"
       } else {
-        println("Defender has defended his country")
+        "The Country was defended"
       }
     } else {
-      println("This is not a valid attack")
+      "This is not a valid attack"
     }
   }
 
@@ -100,7 +103,7 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
     if (defeatedPlayerOpt.isDefined) {
       println(defeatedPlayerOpt.get.name + " is defeated")
     } else {
-      playerOnTurn = getNextPlayer
+      this.playingField = nextPlayer
       status = REINFORCEMENT
       publish(new PhaseChanged)
       changeToReinforcementPhase()
@@ -109,15 +112,28 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
 
   override def getCurrentPhase: Phase = status
 
-  private def getNextPlayer: Player = {
-    val idx = playingField.players.indexOf(playerOnTurn)
-    if (idx + 1 == playingField.players.length) playingField.players.head else playingField.players(idx + 1)
+  override def getAttackableCountries(country: String): List[String] = {
+    if (country != "") {
+      playingField.getCountry(country).get.adjacentCountries.filter(!this.playingField.getPlayerOnTurn.get.containsCountry(_))
+    } else {
+      var dm = List[String]()
+      dm
+    }
+  }
+
+  override def getPlayerOnTurn: Player = this.playingField.getPlayerOnTurn.get
+
+  override def setPlayerOnTurn(player: Player): Unit = this.playingField = this.playingField.copy(playerOnTurn = player.name)
+
+  private def nextPlayer: PlayingField = {
+    val idx = playingField.players.indexOf(this.playingField.getPlayerOnTurn.get)
+    if (idx + 1 == playingField.players.length) this.playingField.copy(playerOnTurn = playingField.players.head.name) else this.playingField.copy(playerOnTurn = playingField.players(idx + 1).name)
   }
 
   private def isPlayerDefeated: Option[Player] = {
     var defeatedPlayer: Option[Player] = None
     playingField.players.foreach(p => if (p.countries.isEmpty) {
-      playingField.players.remove(playingField.players.indexOf(p))
+      this.playingField = playingField.removePlayer(p)
       defeatedPlayer = Some(p)
     })
     if (playingField.players.length == 1) {
@@ -130,34 +146,18 @@ case class DefaultGameController @Inject() (var playingField: Grid) extends Game
   private def checkIfAttackIsValid(srcCountry: String, targetCountry: String, soldiers: Int): Boolean = {
     val src = playingField.getCountry(srcCountry)
     val target = playingField.getCountry(targetCountry)
-    if ((src.isDefined && target.isDefined)
-      && src.get.adjacentCountries.contains(target.get.name)
-      && (src.get.soldiers > soldiers) && (playerOnTurn.countries.contains(src.get)
-        && !playerOnTurn.countries.contains(target.get))) {
-      true
-    } else {
-      false
-    }
+    (src.isDefined && target.isDefined) && src.get.adjacentCountries.contains(target.get.name) && (src.get.soldiers > soldiers) && (this.playingField.getPlayerOnTurn.get.countries.contains(src.get.name) && !this.playingField.getPlayerOnTurn.get.countries.contains(target.get.name))
   }
 
   private def changeToAttackPhase(): Unit = {
-    if (playerOnTurn.handholdSoldiers == 0) {
+    if (this.playingField.getPlayerOnTurn.get.handholdSoldiers == 0) {
       status = ATTACK
       publish(new PhaseChanged)
       LOG.info("You have successfully distribute all of your soldiers!\nAttack Phase starts")
     }
   }
 
-  private def moveSoldiers(src: Country, target: Country, numberOfSoldiers: Int): Unit = {
-    if (src.soldiers - numberOfSoldiers >= 1 && playerOnTurn.countries.contains(src) && playerOnTurn.countries.contains(target)) {
-      src.soldiers -= numberOfSoldiers
-      target.soldiers += numberOfSoldiers
-      status = ATTACK
-      publish(new PhaseChanged)
-    } else {
-      LOG.info("Illegal move!")
-    }
+  private def checkIfPlayingFieldIsValid(): Boolean = {
+    playingField.getAllCountries.nonEmpty && playingField.players.length >= 2
   }
-
-  private def checkIfPlayingFieldIsValid(): Boolean = if (playingField.getAllCountries.nonEmpty && playingField.players.length >= 2) true else false
 }

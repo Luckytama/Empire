@@ -15,8 +15,10 @@ class JsonParser extends Parser {
 
   @throws(classOf[FileNotFoundException])
   override def parseFileToPlayingField(path: String): PlayingField = {
-    val source: String = Source.fromFile(path).getLines().mkString
-    parse(source).extract[PlayingField]
+    val source = Source.fromFile(path)
+    val playingFieldJson = source.getLines().mkString
+    source.close
+    parse(playingFieldJson).extract[PlayingField]
   }
 
 }

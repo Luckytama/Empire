@@ -2,7 +2,7 @@ package de.htwg.se.empire.view.gui
 
 import de.htwg.se.empire.controller.GameController
 import de.htwg.se.empire.util.Phase
-import javax.swing.border.{ EtchedBorder, TitledBorder }
+import javax.swing.border.{EtchedBorder, TitledBorder}
 
 import scala.collection.mutable.ListBuffer
 import scala.swing._
@@ -15,15 +15,15 @@ class AttackPanel(gameController: GameController) extends FlowPanel {
   soldiersAmount.text = "0"
   val attackButton = new Button("Attack")
 
-  var sourceComboPanel = new FlowPanel {
+  var sourceComboPanel: FlowPanel = new FlowPanel {
     contents += sourceCountry
   }
 
-  var destComboPanel = new FlowPanel {
+  var destComboPanel: FlowPanel = new FlowPanel {
     contents += destCountry
   }
 
-  val attackPanel = new GridPanel(7, 1) {
+  val attackPanel: GridPanel = new GridPanel(7, 1) {
     border = new TitledBorder(new EtchedBorder(), "Attack country")
     contents += new Label("Choose country to attack from:")
     contents += sourceComboPanel
@@ -52,7 +52,7 @@ class AttackPanel(gameController: GameController) extends FlowPanel {
     if (gameController.getCurrentPhase == Phase.ATTACK) {
       this.enable()
       val countrySource = new ListBuffer[String]
-      gameController.playerOnTurn.countries.toList.foreach(c => {
+      gameController.playingField.getCountriesForPlayer(gameController.getPlayerOnTurn).foreach(c => {
         countrySource.append(c.name)
       })
       sourceCountry = new ComboBox[String](countrySource) {
@@ -60,11 +60,11 @@ class AttackPanel(gameController: GameController) extends FlowPanel {
         reactions += {
           case SelectionChanged(_) => {
             val list = new ListBuffer[String]
-            gameController.playerOnTurn.countries.toList.foreach(c => {
+            gameController.playingField.getCountriesForPlayer(gameController.getPlayerOnTurn).foreach(c => {
               if (c.name == sourceCountry.selection.item) {
                 soldiersAmount.text = (c.soldiers - 1).toString
                 c.adjacentCountries.foreach(f => {
-                  if (!gameController.playerOnTurn.countries.toList.exists(p => p.name == f)) {
+                  if (!gameController.playingField.getCountriesForPlayer(gameController.getPlayerOnTurn).exists(p => p.name == f)) {
                     list.append(f)
                   }
                 })

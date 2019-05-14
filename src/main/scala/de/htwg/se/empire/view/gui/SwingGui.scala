@@ -3,10 +3,10 @@ package de.htwg.se.empire.view.gui
 import de.htwg.se.empire.controller.GameController
 import de.htwg.se.empire.controller.impl.PhaseChanged
 import de.htwg.se.empire.util.Phase
-import javax.swing.{JFrame, JOptionPane}
+import javax.swing.{ JFrame, JOptionPane }
 
 import scala.swing._
-import scala.swing.event.{ButtonClicked, Key}
+import scala.swing.event.{ ButtonClicked, Key }
 
 class SwingGui(gameController: GameController) extends Frame {
   title = "HTWG Empire"
@@ -76,7 +76,7 @@ class SwingGui(gameController: GameController) extends Frame {
         distributePanel.disable()
         attackPanel.disable()
         gameInfoPanel.disable()
-        JOptionPane.showMessageDialog(new JFrame(), "Player " + gameController.playerOnTurn.name + " won!", "Success", JOptionPane.INFORMATION_MESSAGE)
+        JOptionPane.showMessageDialog(new JFrame(), "Player " + gameController.getPlayerOnTurn.name + " won!", "Success", JOptionPane.INFORMATION_MESSAGE)
       }
     }
     case event: PhaseChanged => {

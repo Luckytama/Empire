@@ -1,12 +1,10 @@
 package de.htwg.se.empire.controller.impl
 
-import java.io.FileNotFoundException
-
 import de.htwg.se.empire.controller.InitController
-import de.htwg.se.empire.model.Grid
+import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.model.player.Player
 import de.htwg.se.empire.parser.impl.JsonParser
-import org.apache.logging.log4j.{ LogManager, Logger }
+import org.apache.logging.log4j.{LogManager, Logger}
 
 import scala.util.Random
 
@@ -21,49 +19,36 @@ class DefaultInitController extends InitController {
 
   val INIT_VALUE_SOLDIERS_PER_COUNTRY = 1
 
-  def setUpGrid(pathToGrid: String, players: String*): Option[Grid] = {
+  def loadGridFromFile(pathToGrid: String, players: String*): PlayingField = {
     val parser = new JsonParser
-    try {
-      val playingField = parser.parseFileToPlayingField(pathToGrid)
-      players.foreach(p => playingField.addPlayer(Player(p)))
-      Some.apply(playingField)
-    } catch {
-      case fnfe: FileNotFoundException =>
-        LOG.info("Can't find file with path ", pathToGrid)
-        None
-      case _: Throwable =>
-        LOG.error("Unhandled exception")
-        None
-    }
-  }
-
-  def addPlayers(playingField: Grid, players: String*): Unit = {
-    players.foreach(p => playingField.addPlayer(Player(p)))
+    val playingField = parser.parseFileToPlayingField(pathToGrid).addPlayers(players: _*)
+    playingField
   }
 
   /*
    * Distribute randomly all countries to all player with one soldiers in it
    */
-  def randDistributeCountries(playingField: Grid): Unit = {
-    val allCountries = playingField.getAllCountries
-    if (1 <= playingField.players.length) {
+  def randDistributeCountries(playingField: PlayingField): PlayingField = {
+    var updatedPlayingField = playingField
+    if (playingField.players.length < 2) {
+      LOG.debug("There are to less players to start the game")
+    } else {
+      val allCountries = playingField.getAllCountries
       val playerCountries = splitList(Random.shuffle(allCountries), playingField.players.length) zip playingField.players
-      for ((cList, p) <- playerCountries) {
-        for (c <- cList) {
-          c.addSoldiers(INIT_VALUE_SOLDIERS_PER_COUNTRY)
-          p.addCountry(c)
+      for ((countries, player) <- playerCountries) {
+        for (country <- countries) {
+          updatedPlayingField = updatedPlayingField.addCountryToPlayer(player, country)
         }
       }
-    } else {
-      LOG.info("There are to less players to start the game")
     }
+    updatedPlayingField
   }
 
   /*
    * Distribute soldiers
    * 5 Players: 25, 4 Players: 30, 3 Players: 35, 2 Players: 40
    */
-  def randDistributeSoldiers(playingField: Grid): Unit = {
+  def randDistributeSoldiers(playingField: PlayingField): PlayingField = {
     playingField.players.length match {
       case 5 =>
         distribute(playingField, INIT_SOLDIERS_5PLAYER)
@@ -74,21 +59,32 @@ class DefaultInitController extends InitController {
       case 2 =>
         distribute(playingField, INIT_SOLDIERS_2PLAYER)
       case _ =>
-        LOG.info("There are not a valid number of players")
+        LOG.error("There are not a valid number of players")
+        playingField
     }
   }
 
-  private def distribute(playingField: Grid, soldiers: Int): Unit = {
-    playingField.players.foreach(p => distributeSoldierToRandCountry(p, soldiers - p.getNumberOfAllSoldiers))
+  private def distribute(playingField: PlayingField, soldiers: Int): PlayingField = {
+    var updatedPlayingField = playingField
+    for (country <- updatedPlayingField.getAllCountries) {
+      updatedPlayingField = updatedPlayingField.addSoldiersToCountry(country, INIT_VALUE_SOLDIERS_PER_COUNTRY)
+    }
+    for (player <- playingField.players) {
+      updatedPlayingField = distributeSoldierToRandCountry(updatedPlayingField, player, soldiers - playingField.getNumberOfAllSoldiers(player))
+    }
+    updatedPlayingField
   }
 
-  private def distributeSoldierToRandCountry(player: Player, soldiers: Int): Unit = {
+  private def distributeSoldierToRandCountry(playingField: PlayingField, player: Player, soldiers: Int): PlayingField = {
     if (player.countries.isEmpty) {
-      LOG.info("There are no countries set for player ", player.name)
-      None
+      LOG.error("There are no countries set for player ", player.name)
+      playingField
     } else if (soldiers != 0) {
-      player.countries(Random.nextInt(player.countries.length)).addSoldiers(1)
-      distributeSoldierToRandCountry(player, soldiers - 1)
+      val randomCountry = playingField.getCountriesForPlayer(player)(Random.nextInt(player.countries.length))
+      val updatedPlayingField = playingField.addSoldiersToCountry(randomCountry, 1)
+      distributeSoldierToRandCountry(updatedPlayingField, player, soldiers - 1)
+    } else {
+      playingField
     }
   }
 

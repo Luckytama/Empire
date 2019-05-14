@@ -2,7 +2,7 @@ package de.htwg.se.empire.view.gui
 
 import de.htwg.se.empire.controller.GameController
 import de.htwg.se.empire.util.Phase
-import javax.swing.border.{ EtchedBorder, TitledBorder }
+import javax.swing.border.{EtchedBorder, TitledBorder}
 
 import scala.collection.mutable.ListBuffer
 import scala.swing._
@@ -18,16 +18,16 @@ class DistributePanel(gameController: GameController) extends FlowPanel {
 
   var countriesCombo = new ComboBox[String](List.empty[String])
 
-  val distributeInfoPanel = new GridPanel(1, 2) {
+  val distributeInfoPanel: GridPanel = new GridPanel(1, 2) {
     contents += new Label("Soldiers to Distribute: ")
     contents += soldiersToDistribute
   }
 
-  val comboPanel = new FlowPanel {
+  val comboPanel: FlowPanel = new FlowPanel {
     contents += countriesCombo
   }
 
-  val distributeSoldierPanel = new GridPanel(3, 1) {
+  val distributeSoldierPanel: GridPanel = new GridPanel(3, 1) {
     vGap = 10
     hGap = 5
     border = new TitledBorder(new EtchedBorder(), "Distribute Soldiers")
@@ -38,7 +38,7 @@ class DistributePanel(gameController: GameController) extends FlowPanel {
     contents += distributeButton
   }
 
-  val distributePanel = new GridPanel(2, 1) {
+  val distributePanel: GridPanel = new GridPanel(2, 1) {
     enabled = false
     border = new TitledBorder(new EtchedBorder(), "Soldier Distribution")
     contents += distributeInfoPanel
@@ -62,9 +62,9 @@ class DistributePanel(gameController: GameController) extends FlowPanel {
   def refresh(): Unit = {
     if (gameController.getCurrentPhase == Phase.REINFORCEMENT) {
       this.enable()
-      soldiersToDistribute.text = gameController.playerOnTurn.handholdSoldiers.toString
+      soldiersToDistribute.text = gameController.getPlayerOnTurn.handholdSoldiers.toString
       val countries = new ListBuffer[String]
-      gameController.playerOnTurn.countries.toList.foreach(c => {
+      gameController.playingField.getCountriesForPlayer(gameController.getPlayerOnTurn).foreach(c => {
         countries.append(c.name)
       })
       this.comboPanel.contents.clear()

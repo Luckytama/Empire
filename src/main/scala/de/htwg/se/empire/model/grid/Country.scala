@@ -2,26 +2,25 @@ package de.htwg.se.empire.model.grid
 
 import org.apache.logging.log4j.{ LogManager, Logger }
 
-case class Country(name: String, adjacentCountries: List[String]) {
+import scala.util.{ Failure, Success, Try }
+
+case class Country(name: String, adjacentCountries: List[String], soldiers: Int = 0) {
 
   val LOG: Logger = LogManager.getLogger(this.getClass)
 
-  var soldiers = 0
-
-  def addSoldiers(numberOfSoldiers: Int): Unit = {
+  def addSoldiers(numberOfSoldiers: Int): Try[Country] = {
     if (0 > numberOfSoldiers) {
       LOG.error("Numbers of soldiers can't be negative or null")
       throw new IllegalArgumentException
     }
-    soldiers += numberOfSoldiers
+    Success(copy(soldiers = soldiers + numberOfSoldiers))
   }
 
-  def removeSoldiers(numberOfSoldiers: Int): Unit = {
+  def removeSoldiers(numberOfSoldiers: Int): Try[Country] = {
     if (0 > numberOfSoldiers) {
       LOG.error("Numbers of soldiers to remove can't be negative or null")
-      throw new IllegalArgumentException
-    }
-    if (0 <= soldiers - numberOfSoldiers) soldiers -= numberOfSoldiers else soldiers = 0
+      Failure(new IllegalArgumentException)
+    } else if (0 <= soldiers - numberOfSoldiers) Success(copy(soldiers = soldiers - numberOfSoldiers)) else Success(copy(soldiers = 0))
   }
 
   override def toString: String = name

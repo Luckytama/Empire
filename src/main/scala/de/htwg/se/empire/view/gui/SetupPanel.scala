@@ -13,7 +13,7 @@ import scala.swing.event.ButtonClicked
 class SetupPanel(gameController: GameController) extends FlowPanel {
   val chooseFileLabel = new Label("Please choose a Playingfield.json: ")
   val chooseFileButton = new Button("Choose file")
-  val fileChooser = new JFileChooser("./playingfield")
+  val fileChooser = new JFileChooser("/Users/michael/Documents/Web-Technologien/Play-Empire/app/playingfield/EmpireData.json")
   fileChooser.setFileFilter(new FileNameExtensionFilter("Json Files", "json"))
 
   val playerInput = new TextField()

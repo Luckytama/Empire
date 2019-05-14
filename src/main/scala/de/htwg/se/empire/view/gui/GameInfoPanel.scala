@@ -2,7 +2,7 @@ package de.htwg.se.empire.view.gui
 
 import de.htwg.se.empire.controller.GameController
 import de.htwg.se.empire.util.Phase
-import javax.swing.border.{ EtchedBorder, TitledBorder }
+import javax.swing.border.{EtchedBorder, TitledBorder}
 
 import scala.swing._
 
@@ -35,9 +35,9 @@ class GameInfoPanel(gameController: GameController) extends FlowPanel {
 
   def refresh(): Unit = {
     if (gameController.getCurrentPhase != Phase.IDLE && gameController.getCurrentPhase != Phase.SETUP) {
-      currentPlayer.text = gameController.playerOnTurn.name
-      numberOfCountries.text = gameController.playerOnTurn.getCountryAmount.toString
-      numberOfSoldiers.text = gameController.playerOnTurn.getNumberOfAllSoldiers.toString
+      currentPlayer.text = gameController.getPlayerOnTurn.name
+      numberOfCountries.text = gameController.getPlayerOnTurn.getCountryAmount.toString
+      numberOfSoldiers.text = gameController.playingField.getNumberOfAllSoldiers(gameController.getPlayerOnTurn).toString
     }
     if (gameController.getCurrentPhase != Phase.ATTACK) {
       endTurnButton.enabled = false
