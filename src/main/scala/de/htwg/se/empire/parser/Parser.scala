@@ -4,4 +4,6 @@ import de.htwg.se.empire.model.grid.PlayingField
 
 trait Parser {
   def parseFileToPlayingField(path: String): PlayingField
+
+  def parsePlayingFieldToFile(playingField: String): String
 }

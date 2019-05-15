@@ -20,9 +20,10 @@ libraryDependencies ++= Seq(
   "org.apache.logging.log4j" % "log4j-api" % "2.11.0",
   "org.apache.logging.log4j" % "log4j-core" % "2.11.0",
   "org.json4s" %% "json4s-jackson" % "3.3.0",
-  "net.codingwell" %% "scala-guice" % "4.2.1",
+  "org.mongodb.scala" %% "mongo-scala-driver" % "2.6.0",
   "org.scala-lang" % "scala-swing" % "2.11+",
-  "com.typesafe.akka" %% "akka-http"   % "10.1.8",
+  "net.codingwell" %% "scala-guice" % "4.2.1",
+  "com.typesafe.akka" %% "akka-http" % "10.1.8",
   "com.typesafe.akka" %% "akka-stream" % "2.5.19",
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.8"
 )

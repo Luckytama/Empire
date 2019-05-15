@@ -5,10 +5,10 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{Sink, Source}
 import de.htwg.se.empire.controller.GameController
+import de.htwg.se.empire.parser.impl.JsonParser
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
 
 class RestApi(gameController: GameController) {
@@ -16,6 +16,8 @@ class RestApi(gameController: GameController) {
   implicit val system: ActorSystem = ActorSystem("my-system")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
+
+  val parser = new JsonParser
 
   def startRestApi() {
     val route =
@@ -30,6 +32,10 @@ class RestApi(gameController: GameController) {
       } ~ path("playingfield") {
         get {
           complete(HttpResponse(entity = HttpEntity(ContentTypes.`application/json`, gameController.playingField.generateJsonObject)))
+        }
+      } ~ path("save") {
+        get {
+          complete(HttpResponse(entity = HttpEntity(ContentTypes.`application/json`, parser.parsePlayingFieldToFile(gameController.playingField.generateJsonObject))))
         }
       }
 
