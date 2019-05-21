@@ -1,12 +1,13 @@
-package de.htwg.se.empire.controller
+package de.htwg.se.empire.microservice
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
-import akka.http.scaladsl.server.Directives.{complete, get, path}
+import akka.http.scaladsl.model.{ ContentTypes, HttpEntity, HttpResponse }
+import akka.http.scaladsl.server.Directives.{ complete, get, path }
 import akka.stream.ActorMaterializer
-import com.google.inject.{Guice, Injector}
-import de.htwg.se.empire.EmpireModule
+import com.google.inject.{ Guice, Injector }
+//import de.htwg.se.empire.EmpireModule
+//import de.htwg.se.empire.controller.{ AttackController, InitController, ReinforcementController }
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.io.StdIn
@@ -17,10 +18,10 @@ object ControllerApi {
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
-  val injector: Injector = Guice.createInjector(new EmpireModule)
-  val attackController: AttackController = injector.getInstance(classOf[AttackController])
-  val reinforcementController: ReinforcementController = injector.getInstance(classOf[ReinforcementController])
-  val initController: InitController = injector.getInstance(classOf[InitController])
+  //  val injector: Injector = Guice.createInjector(new EmpireModule)
+  //  val attackController: AttackController = injector.getInstance(classOf[AttackController])
+  //  val reinforcementController: ReinforcementController = injector.getInstance(classOf[ReinforcementController])
+  //  val initController: InitController = injector.getInstance(classOf[InitController])
 
   def main(args: Array[String]): Unit = {
     startControllerApi()
@@ -33,10 +34,9 @@ object ControllerApi {
       }
     }
 
+    val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 8000)
 
-    val bindingFuture = Http().bindAndHandle(route, "localhost", 8000)
-
-    println(s"Server online at http://localhost:8000/\nPress RETURN to stop...")
+    println(s"Server online at http://0.0.0.0:8000/\nPress RETURN to stop...")
     StdIn.readLine() // let it run until user presses return
     bindingFuture
       .flatMap(_.unbind()) // trigger unbinding from the port
