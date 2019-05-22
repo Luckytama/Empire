@@ -1,4 +1,4 @@
-package de.htwg.se.empire.microservice.controller
+package microservice.controller
 
 import java.io.FileNotFoundException
 

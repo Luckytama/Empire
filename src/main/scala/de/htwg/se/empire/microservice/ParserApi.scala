@@ -1,17 +1,17 @@
-package de.htwg.se.empire.microservice
+package microservice
+
+import java.io.FileNotFoundException
 
 import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
+import akka.http.scaladsl.model.{ ContentTypes, HttpEntity, HttpResponse }
 import akka.http.scaladsl.server.Directives
 import akka.stream.ActorMaterializer
-import com.google.inject.{Guice, Injector}
-import de.htwg.se.empire.EmpireModule
-import de.htwg.se.empire.microservice.controller.ParserApiController
+import org.json4s.DefaultFormats
 
 import scala.concurrent.ExecutionContextExecutor
-import scala.io.StdIn
+import scala.io.{ Source, StdIn }
 
 object ParserApi extends Directives {
 
@@ -21,8 +21,6 @@ object ParserApi extends Directives {
   system.eventStream.setLogLevel(Logging.DebugLevel)
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val executionContext: ExecutionContextExecutor = system.dispatcher
-
-  val injector: Injector = Guice.createInjector(new EmpireModule)
 
   def main(args: Array[String]): Unit = {
     startControllerApi()
@@ -38,12 +36,26 @@ object ParserApi extends Directives {
       }
     }
 
-    val bindingFuture = Http().bindAndHandle(route, "localhost", REST_PORT)
+    val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", 8000)
 
-    println(s"Server online at http://localhost:8000/\nPress RETURN to stop...")
-    StdIn.readLine() // let it run until user presses return
-    bindingFuture
-      .flatMap(_.unbind()) // trigger unbinding from the port
-      .onComplete(_ => system.terminate()) // and shutdown when done
+    println(s"Server online at http://0.0.0.0:8000/\nPress RETURN to stop...")
+
+  }
+}
+
+object ParserApiController {
+
+  implicit val formats: DefaultFormats.type = DefaultFormats
+
+  def loadGrid(path: String): String = {
+    getPlayingFieldFromFile(path)
+  }
+
+  @throws(classOf[FileNotFoundException])
+  private def getPlayingFieldFromFile(path: String): String = {
+    val source = Source.fromFile(path)
+    val playingFieldJson = source.getLines().mkString
+    source.close
+    playingFieldJson
   }
 }
