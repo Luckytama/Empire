@@ -11,6 +11,7 @@ import scala.io.StdIn.readLine
 
 object Empire {
 
+  val REST_PORT: Int = 8888
   val injector: Injector = Guice.createInjector(new EmpireModule)
   val parser: Parser = injector.getInstance(classOf[Parser])
   val gameController: GameController = injector.getInstance(classOf[GameController])
@@ -19,7 +20,7 @@ object Empire {
     val gui = new SwingGui(gameController)
     val restApi = new RestApi(gameController)
 
-    restApi.startRestApi()
+    restApi.startRestApi(REST_PORT)
 
   }
 

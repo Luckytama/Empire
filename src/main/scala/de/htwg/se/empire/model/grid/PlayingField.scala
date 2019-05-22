@@ -20,7 +20,6 @@ case class PlayingField(continents: List[Continent] = List.empty, players: List[
       LOG.info("There can't be more than 5 players.")
       this
     }
-
   }
 
   def addPlayers(players: String*): PlayingField = {

@@ -1,21 +1,26 @@
 package de.htwg.se.empire.controller.impl
 
+import akka.http.scaladsl.model.HttpEntity
 import com.google.inject.{Guice, Inject, Injector}
 import de.htwg.se.empire.EmpireModule
 import de.htwg.se.empire.controller.{AttackController, GameController, InitController, ReinforcementController}
 import de.htwg.se.empire.model.grid.PlayingField
 import de.htwg.se.empire.model.player.Player
-import de.htwg.se.empire.parser.Parser
+import de.htwg.se.empire.parser.impl.JsonParser
 import de.htwg.se.empire.util.Phase.{Phase, _}
 import org.apache.logging.log4j.{LogManager, Logger}
 
-case class DefaultGameController @Inject() (var playingField: PlayingField) extends GameController {
+import scala.concurrent.ExecutionContext
+import scala.util.{Failure, Success}
+
+case class DefaultGameController @Inject()(var playingField: PlayingField) extends GameController {
 
   val injector: Injector = Guice.createInjector(new EmpireModule)
   val attackController: AttackController = injector.getInstance(classOf[AttackController])
   val initController: InitController = injector.getInstance(classOf[InitController])
   val reinforcementController: ReinforcementController = injector.getInstance(classOf[ReinforcementController])
-  val parser: Parser = injector.getInstance(classOf[Parser])
+  val apiController: ApiController = new ApiController
+  val jsonParser: JsonParser = new JsonParser
 
   var status: Phase = SETUP
 
@@ -23,7 +28,12 @@ case class DefaultGameController @Inject() (var playingField: PlayingField) exte
 
   override def setUpPhase(pathToGrid: String, players: String*): Unit = {
     status = SETUP
-    this.playingField = initController.loadGridFromFile(pathToGrid, players: _*)
+    apiController.getPlayingFieldFromParserApi(pathToGrid).onComplete {
+      case Success(response) =>
+        this.playingField = jsonParser.parsePlayingFieldFromJson(response.entity.asInstanceOf[HttpEntity.Strict].data.utf8String)
+      case Failure(_) =>
+        LOG.error("Could not load playing field from ParserApi")
+    }(ExecutionContext.global)
   }
 
   override def addPlayer(players: String*): Unit = {

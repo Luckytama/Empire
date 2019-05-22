@@ -18,7 +18,11 @@ class JsonParser extends Parser {
     val source = Source.fromFile(path)
     val playingFieldJson = source.getLines().mkString
     source.close
-    parse(playingFieldJson).extract[PlayingField]
+    parsePlayingFieldFromJson(playingFieldJson)
+  }
+
+  override def parsePlayingFieldFromJson(json: String): PlayingField = {
+    parse(json).extract[PlayingField]
   }
 
   override def parsePlayingFieldToFile(playingField: String): String = {

@@ -19,7 +19,7 @@ class RestApi(gameController: GameController) {
 
   val parser = new JsonParser
 
-  def startRestApi() {
+  def startRestApi(restPort: Int) {
     val route =
       path("status") {
         get {
@@ -39,7 +39,7 @@ class RestApi(gameController: GameController) {
         }
       }
 
-    val bindingFuture = Http().bindAndHandle(route, "localhost", 8888)
+    val bindingFuture = Http().bindAndHandle(route, "localhost", restPort)
 
     println(s"Server online at http://localhost:8888/\nPress RETURN to stop...")
     StdIn.readLine() // let it run until user presses return
