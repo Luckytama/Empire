@@ -7,6 +7,7 @@ import javax.swing.{ JFrame, JOptionPane }
 
 import scala.swing._
 import scala.swing.event.{ ButtonClicked, Key }
+import scala.swing.ComboBox
 
 class SwingGui(gameController: GameController) extends Frame {
   title = "HTWG Empire"
@@ -45,6 +46,8 @@ class SwingGui(gameController: GameController) extends Frame {
 
   reactions += {
     case ButtonClicked(setupPanel.startGameButton) => {
+      val file: String = setupPanel.fields.selection.item
+      gameController.setUpPhase(file)
       gameController.changeToGamePhase()
       setupPanel.visible = false
       distributePanel.visible = true

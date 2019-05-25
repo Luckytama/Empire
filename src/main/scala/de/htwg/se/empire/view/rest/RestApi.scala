@@ -2,7 +2,7 @@ package de.htwg.se.empire.view.rest
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse}
+import akka.http.scaladsl.model.{ ContentTypes, HttpEntity, HttpResponse }
 import akka.http.scaladsl.server.Directives._
 import akka.stream.ActorMaterializer
 import de.htwg.se.empire.controller.GameController
@@ -39,9 +39,9 @@ class RestApi(gameController: GameController) {
         }
       }
 
-    val bindingFuture = Http().bindAndHandle(route, "localhost", restPort)
+    val bindingFuture = Http().bindAndHandle(route, "0.0.0.0", restPort)
 
-    println(s"Server online at http://localhost:8888/\nPress RETURN to stop...")
+    println(s"Server online at http://0.0.0.0:8888/\nPress RETURN to stop...")
     StdIn.readLine() // let it run until user presses return
     bindingFuture
       .flatMap(_.unbind()) // trigger unbinding from the port

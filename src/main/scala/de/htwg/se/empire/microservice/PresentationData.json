@@ -1,0 +1,96 @@
+{
+  "continents": [
+    {
+      "name": "Africa",
+      "bonus": 3,
+      "countries": [
+        {
+          "name": "Congo",
+          "adjacentCountries": [
+            "South Africa",
+            "North Africa",
+            "East Africa"
+          ]
+        },
+        {
+          "name": "East Africa",
+          "adjacentCountries": [
+            "Congo",
+            "North Africa",
+            "Egypt",
+            "Madagascar",
+            "South Africa"
+          ]
+        },
+        {
+          "name": "Egypt",
+          "adjacentCountries": [
+            "East Africa",
+            "North Africa"
+          ]
+        },
+        {
+          "name": "Madagascar",
+          "adjacentCountries": [
+            "South Africa",
+            "East Africa",
+            "Madagascar"
+          ]
+        },
+        {
+          "name": "North Africa",
+          "adjacentCountries": [
+            "Egypt",
+            "East Africa",
+            "Congo"
+          ]
+        },
+        {
+          "name": "South Africa",
+          "adjacentCountries": [
+            "Congo",
+            "East Africa",
+            "Madagascar"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Australia",
+      "bonus": 2,
+      "countries": [
+        {
+          "name": "Eastern Australia",
+          "adjacentCountries": [
+            "Western Australia",
+            "New Guinea"
+          ]
+        },
+        {
+          "name": "Indonesia",
+          "adjacentCountries": [
+            "Western Australia",
+            "New Guinea",
+            "Madagascar"
+          ]
+        },
+        {
+          "name": "New Guinea",
+          "adjacentCountries": [
+            "Eastern Australia",
+            "Indonesia",
+            "Western Australia"
+          ]
+        },
+        {
+          "name": "Western Australia",
+          "adjacentCountries": [
+            "Eastern Australia",
+            "Indonesia",
+            "New Guinea"
+          ]
+        }
+      ]
+    }
+  ]
+}
