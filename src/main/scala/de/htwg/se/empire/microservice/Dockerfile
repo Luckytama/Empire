@@ -4,7 +4,7 @@ COPY . /api
 
 WORKDIR /api
 
-#RUN sbt compile
+RUN sbt compile
 
 EXPOSE 8000
 

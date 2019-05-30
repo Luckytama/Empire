@@ -14,6 +14,9 @@ import scala.swing.event.ButtonClicked
 class SetupPanel(gameController: GameController) extends FlowPanel {
 
   val chooseFileLabel = new Label("Please choose a Playingfield.json: ")
+  val chooseFileButton = new Button("Choose file")
+  val fileChooser = new JFileChooser("/Users/michael/Documents/Web-Technologien/Play-Empire/app/playingfield/EmpireData.json")
+  fileChooser.setFileFilter(new FileNameExtensionFilter("Json Files", "json"))
   val fields = new ComboBox[String](List("EmpireData.json", "PresentationData.json"))
 
   val playerInput = new TextField()
@@ -22,12 +25,14 @@ class SetupPanel(gameController: GameController) extends FlowPanel {
   val startGameButton = new Button("Start Game")
 
   listenTo(addPlayerButton)
+  listenTo(chooseFileButton)
 
   val setupPanel = new GridPanel(3, 2) {
     vGap = 10
     hGap = 5
     border = new TitledBorder(new EtchedBorder(), "Setup")
     contents += chooseFileLabel
+    contents += chooseFileButton
     contents += fields
     contents += playerInput
     contents += addPlayerButton
@@ -37,6 +42,11 @@ class SetupPanel(gameController: GameController) extends FlowPanel {
   contents += setupPanel
 
   reactions += {
+    case ButtonClicked(`chooseFileButton`) => {
+      val file: String = fields.selection.item
+      gameController.setUpPhase("/api/" + file)
+      JOptionPane.showMessageDialog(new JFrame(), "Chosen playingfield: " + file)
+    }
     case ButtonClicked(`addPlayerButton`) => {
       if (playerInput.text.trim == "") {
         JOptionPane.showMessageDialog(new JFrame(), "Player name can't be empty!", "Error", JOptionPane.ERROR_MESSAGE)
