@@ -27,6 +27,9 @@ class SwingGui(gameController: GameController) extends Frame {
       contents += new MenuItem(Action("Quit") {
         System.exit(0)
       })
+      contents += new MenuItem(Action("Save") {
+        gameController.saveCurrentPlayer
+      })
     }
   }
 
