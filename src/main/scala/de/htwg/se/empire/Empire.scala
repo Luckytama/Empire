@@ -1,6 +1,6 @@
 package de.htwg.se.empire
 
-import com.google.inject.{Guice, Injector}
+import com.google.inject.{ Guice, Injector }
 import de.htwg.se.empire.controller.GameController
 import de.htwg.se.empire.parser.Parser
 import de.htwg.se.empire.view.TUI
@@ -17,10 +17,17 @@ object Empire {
   val gameController: GameController = injector.getInstance(classOf[GameController])
 
   def main(args: Array[String]): Unit = {
-    val gui = new SwingGui(gameController)
+    //    val gui = new SwingGui(gameController)
     val restApi = new RestApi(gameController)
+    val tui = TUI(gameController)
 
     restApi.startRestApi(REST_PORT)
+    println("Enter '1' to start a new game or 'q' to exit the game:")
+    var input: String = ""
+    do {
+      input = readLine()
+      tui.processInput(input)
+    } while (input != "q")
 
   }
 
